@@ -88,7 +88,7 @@ pub fn distribute_rewards(ctx: Context<DistributeRewards>) -> Result<()> {
 
 #[derive(Accounts)]
 pub struct DistributeRewards<'info> {
-    #[account(mut, seeds = [b"challenge", challenge.creator.as_ref(), &[challenge.bump]], bump = challenge.bump)]
+    #[account(mut)]
     pub challenge: Account<'info, Challenge>,
 
     /// The escrow PDA account

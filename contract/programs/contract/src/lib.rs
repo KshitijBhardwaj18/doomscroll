@@ -1,10 +1,11 @@
 use anchor_lang::prelude::*;
 
-declare_id!("Fg6PaFpoGXkYsidMpWxqSWf...REPLACE_WITH_YOUR_PROGRAM_ID");
+declare_id!("11111111111111111111111111111112");
 
 // Module declarations
 pub mod state;
 pub mod instructions;
+pub mod errors;
 
 // Import state types
 use state::*;

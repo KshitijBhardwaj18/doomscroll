@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use crate::state::{Challenge, ChallengeStatus};
-use crate::ErrorCode;
+use crate::errors::ErrorCode;
 
 pub fn end_challenge(ctx: Context<EndChallenge>) -> Result<()> {
     let challenge = &mut ctx.accounts.challenge;
@@ -12,7 +12,7 @@ pub fn end_challenge(ctx: Context<EndChallenge>) -> Result<()> {
     // allow creator or verifier to end
     let caller = ctx.accounts.signer.key();
     require!(
-        *caller == challenge.creator || *caller == challenge.verifier,
+        caller == challenge.creator || caller == challenge.verifier,
         ErrorCode::Unauthorized
     );
 

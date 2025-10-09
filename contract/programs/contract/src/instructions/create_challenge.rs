@@ -1,5 +1,8 @@
 use anchor_lang::prelude::*;
-use crate::state::{Challenge, ChallengeStatus};
+use crate::state::{Challenge,GlobalCounter};
+use crate::state::challenge::ChallengeStatus;
+use crate::errors::ErrorCode;
+
 
 pub fn create_challenge(
     ctx: Context<CreateChallenge>,
@@ -18,13 +21,12 @@ pub fn create_challenge(
     challenge.doom_threshold_minutes = doom_threshold_minutes;
     challenge.start_time = start_time;
     challenge.end_time = end_time;
-    challenge.participant = Vec::new(),
     challenge.participant_count = 0;
     challenge.verifier = *ctx.accounts.verifier.key;
-    challenge.status = ChallengeStatus::Active as u8;
-    challenge.bump = *ctx.bumps.get("challenge").unwrap();
+    challenge.status =  ChallengeStatus::Active as u8;
+    challenge.bump = ctx.bumps.challenge;
 
-    counter.challenge_count = counter.challenge_count.checked_add(1).ok_or(ErrorCode::Overflow)?;
+    counter.challenge_count = counter.challenge_count.checked_add(1).ok_or(error!(ErrorCode::Overflow))?;
     Ok(())
 }
 

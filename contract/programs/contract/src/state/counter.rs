@@ -1,6 +1,8 @@
+use anchor_lang::prelude::*;
+
 #[account]
 pub struct GlobalCounter {
-    pub challenge_count: u64,
+    pub challenge_count: u8,
 }
 
 impl GlobalCounter {

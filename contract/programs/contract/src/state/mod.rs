@@ -1,6 +1,6 @@
 pub mod challenge;
 pub mod participant;
-pun mod counter;
+pub mod counter;
 
 pub use challenge::*;
 pub use participant::*;

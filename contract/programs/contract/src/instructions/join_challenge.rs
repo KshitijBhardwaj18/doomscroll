@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::{system_instruction, program::invoke_signed};
 use crate::state::{Challenge, ChallengeStatus, Participant};
-use crate::ErrorCode;
+use crate::errors::ErrorCode;
 
 pub fn join_challenge(ctx: Context<JoinChallenge>) -> Result<()> {
     let challenge = &mut ctx.accounts.challenge;
@@ -40,15 +40,11 @@ pub fn join_challenge(ctx: Context<JoinChallenge>) -> Result<()> {
     participant.user = *ctx.accounts.payer.key;
     participant.deposited = challenge.entry_fee;
     participant.disqualified = false;
-    participant.challenge = ctx.accounts.challenge.key();
-    participant.bump = *ctx.bumps.get("participant").unwrap();
-    participant.joined_at = participant.joined_at = Clock::get()?.unix_timestamp;
+    participant.challenge = challenge.key();
+    participant.bump = ctx.bumps.participant;
+    participant.joined_at = Clock::get()?.unix_timestamp;
 
-    // update challenge totals
-    challenge.total_pool = challenge
-        .total_pool
-        .checked_add(challenge.entry_fee)
-        .ok_or(ErrorCode::Overflow)?;
+   
     challenge.participant_count = challenge
         .participant_count
         .checked_add(1)
@@ -76,7 +72,7 @@ pub struct JoinChallenge<'info> {
     /// This is a system account, created beforehand during challenge creation or created on-demand.
     /// We assume it exists and is a PDA with seeds ["escrow", challenge.key()]
     /// Mark as mut because we'll accept lamports into it
-    #[account(mut, seeds = [b"escrow", challenge.key().as_ref()], bump = challenge.escrow_bump())]
+    #[account(mut, seeds = [b"escrow", challenge.key().as_ref()], bump )]
     /// CHECK: Escrow is a system account
     pub escrow: UncheckedAccount<'info>,
 

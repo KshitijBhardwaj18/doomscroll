@@ -1,3 +1,5 @@
+use anchor_lang::prelude::*;
+
 #[error_code]
 pub enum ErrorCode {
     #[msg("Challenge is not active")]
@@ -22,4 +24,6 @@ pub enum ErrorCode {
     NoWinnersProvided,
     #[msg("Divide by zero")]
     DivideByZero,
+    #[msg("Challenge already started")]
+    ChallengeAlreadyStarted,
 }
