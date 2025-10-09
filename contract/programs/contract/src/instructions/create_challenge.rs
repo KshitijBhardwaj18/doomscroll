@@ -8,24 +8,41 @@ pub fn create_challenge(
     start_time: i64,
     end_time: i64,
 ) -> Result<()> {
+    let counter = &mut ctx.accounts.global_counter;
+    let challenge_id = counter.challenge_count;
+
     let challenge = &mut ctx.accounts.challenge;
+    challenge.id = challenge_id;
     challenge.creator = *ctx.accounts.creator.key;
     challenge.entry_fee = entry_fee;
     challenge.doom_threshold_minutes = doom_threshold_minutes;
     challenge.start_time = start_time;
     challenge.end_time = end_time;
-    challenge.total_pool = 0;
+    challenge.participant = Vec::new(),
     challenge.participant_count = 0;
     challenge.verifier = *ctx.accounts.verifier.key;
     challenge.status = ChallengeStatus::Active as u8;
     challenge.bump = *ctx.bumps.get("challenge").unwrap();
+
+    counter.challenge_count = counter.challenge_count.checked_add(1).ok_or(ErrorCode::Overflow)?;
     Ok(())
 }
 
 #[derive(Accounts)]
-#[instruction(entry_fee: u64, doom_threshold_minutes: u64, start_time: i64, end_time: i64)]
+#[instruction(challenge_id:u8,entry_fee: u64, doom_threshold_minutes: u64, start_time: i64, end_time: i64)]
 pub struct CreateChallenge<'info> {
-    #[account(init, payer = creator, space = Challenge::space(), seeds = [b"challenge", creator.key().as_ref(), &[0u8]], bump)]
+
+    #[account(
+        init_if_needed,
+        payer = creator,
+        space = GlobalCounter::LEN,
+        seeds = [b"global_counter"],
+        bump
+    )]
+    pub global_counter: Account<'info, GlobalCounter>,
+
+
+    #[account(init, payer = creator, space = Challenge::space(), seeds = [b"challenge", creator.key().as_ref(), &[challenge_id]], bump)]
     /// CHECK: seeds bumped in runtime with bump passed implicitly — we'll recompute bump via ctx.bumps
     pub challenge: Account<'info, Challenge>,
 

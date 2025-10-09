@@ -2,26 +2,33 @@ use anchor_lang::prelude::*;
 
 #[account]
 pub struct Challenge {
-    pub creator: Pubkey,         // 32
-    pub entry_fee: u64,          // 8
-    pub doom_threshold: u64,     // 8
-    pub start_time: i64,         // 8
-    pub end_time: i64,           // 8       
-    pub participant: Vec<Pubkey>,
-    pub participant_count: u32,  // 4
-    pub verifier: Pubkey,        // 32
-    pub status: u8,              // 1
-    pub bump: u8,                // 1
+    pub id: u8,                      // 1
+    pub creator: Pubkey,             // 32
+    pub entry_fee: u64,              // 8
+    pub doom_threshold_minutes: u64, // 8
+    pub start_time: i64,             // 8
+    pub end_time: i64,               // 8       
+    pub participant_count: u32,      // 4
+    pub verifier: Pubkey,           // 32
+    pub status: u8,                 // 1
+    pub bump: u8,                   // 1
 }
 
 impl Challenge {
+    
     pub fn space() -> usize {
-        // 8 discriminator + fields
-        8 + 32 + 8 + 8 + 8 + 8 + 8 + 4 + 32 + 1 + 1 + 16
-    }
-
-    pub fn escrow_bump(&self) -> u8 {
-        self.bump
+        8  // discriminator
+        + 1  // id
+        + 32 // creator
+        + 8  // entry_fee
+        + 8  // doom_threshold_minutes
+        + 8  // start_time
+        + 8  // end_time
+        + 4  // Vec length prefix
+        + 4  // participant_count
+        + 32 // verifier
+        + 1  // status
+        + 1  // bump
     }
 }
 

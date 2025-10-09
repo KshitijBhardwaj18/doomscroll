@@ -10,6 +10,13 @@ pub fn join_challenge(ctx: Context<JoinChallenge>) -> Result<()> {
         ErrorCode::ChallengeNotActive
     );
 
+    let now = Clock::get()?.unix_timestamp;
+    
+    require!(
+        now < challenge.start_time,  // ← Must be BEFORE start
+        ErrorCode::ChallengeAlreadyStarted  // Need to add this error!
+    );
+
     // transfer lamports (entry_fee) from participant payer to escrow PDA account
     let ix = system_instruction::transfer(
         ctx.accounts.payer.key,
@@ -35,6 +42,7 @@ pub fn join_challenge(ctx: Context<JoinChallenge>) -> Result<()> {
     participant.disqualified = false;
     participant.challenge = ctx.accounts.challenge.key();
     participant.bump = *ctx.bumps.get("participant").unwrap();
+    participant.joined_at = participant.joined_at = Clock::get()?.unix_timestamp;
 
     // update challenge totals
     challenge.total_pool = challenge
