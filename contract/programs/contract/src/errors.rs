@@ -14,8 +14,6 @@ pub enum ErrorCode {
     ParticipantMismatch,
     #[msg("Participant has no deposit")]
     NoDepositForParticipant,
-    #[msg("Participant is disqualified")]
-    ParticipantDisqualified,
     #[msg("Account deserialization failed")]
     AccountDeserializeError,
     #[msg("Invalid winners accounts provided")]

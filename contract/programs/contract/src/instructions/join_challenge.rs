@@ -39,7 +39,6 @@ pub fn join_challenge(ctx: Context<JoinChallenge>) -> Result<()> {
     let participant = &mut ctx.accounts.participant;
     participant.user = *ctx.accounts.payer.key;
     participant.deposited = challenge.entry_fee;
-    participant.disqualified = false;
     participant.challenge = challenge.key();
     participant.bump = ctx.bumps.participant;
     participant.joined_at = Clock::get()?.unix_timestamp;

@@ -7,9 +7,6 @@ pub mod state;
 pub mod instructions;
 pub mod errors;
 
-// Import state types
-use state::*;
-
 // Import instruction handlers and contexts
 use instructions::{
     create_challenge::*,
@@ -51,7 +48,7 @@ pub mod doomscroll {
 
     /// Distribute rewards to winners. Only the verifier key can call this.
     /// winners are passed as participant accounts in the accounts array (variable length)
-    pub fn distribute_rewards(ctx: Context<DistributeRewards>) -> Result<()> {
+    pub fn distribute_rewards<'info>(ctx: Context<'_, '_, '_, 'info, DistributeRewards<'info>>) -> Result<()> {
         instructions::distribute_rewards::distribute_rewards(ctx)
     }
 }

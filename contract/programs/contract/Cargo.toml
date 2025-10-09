@@ -23,3 +23,7 @@ anchor-lang = {version = "0.31.1", features = ["init-if-needed"]}
 borsh = "0.10.3"
 solana-system-interface = "2.0.0"
 
+[lints.rust]
+unexpected_cfgs = "allow"
+deprecated = "allow"
+
