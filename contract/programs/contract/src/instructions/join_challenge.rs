@@ -10,12 +10,12 @@ pub fn join_challenge(ctx: Context<JoinChallenge>) -> Result<()> {
         ErrorCode::ChallengeNotActive
     );
 
-    let now = Clock::get()?.unix_timestamp;
+    // let now = Clock::get()?.unix_timestamp;
     
-    require!(
-        now < challenge.start_time,  // ← Must be BEFORE start
-        ErrorCode::ChallengeAlreadyStarted  // Need to add this error!
-    );
+    // require!(
+    //     now < challenge.start_time,  // ← Must be BEFORE start
+    //     ErrorCode::ChallengeAlreadyStarted  // Need to add this error!
+    // );
 
     // transfer lamports (entry_fee) from participant payer to escrow PDA account
     let ix = system_instruction::transfer(

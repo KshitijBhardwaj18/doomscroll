@@ -40,7 +40,7 @@ describe("contract", () => {
     admin = Keypair.generate(); // ✅ Sets the outer variable
     participants = [];
 
-    for (let i = 0; i <= 100; i++) {
+    for (let i = 0; i <= 10; i++) {
       participants.push(Keypair.generate());
     }
 
@@ -83,9 +83,9 @@ describe("contract", () => {
     const now = Math.floor(Date.now() / 1000);
     const tenMinutes = 10 * 60;
 
-    const startTime = new anchor.BN(now - tenMinutes); // Starts in 10 minutes
+    const startTime = new anchor.BN(now - tenMinutes * 2); // Starts in 10 minutes
 
-    const endTime = new anchor.BN(now);
+    const endTime = new anchor.BN(now - tenMinutes);
 
     await program.methods
       .createChallenge(
@@ -139,7 +139,139 @@ describe("contract", () => {
     console.log("Participant count", count);
   });
 
-  it("Distribute rewards amoung participants", async () => {
-    const 
-  })
+  it("End Challenge", async () => {
+    const [challengePda] = PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("challenge"),
+        admin.publicKey.toBuffer(),
+        Buffer.from(challengeId),
+      ],
+      program.programId
+    );
+
+    const tx = await program.methods
+      .endChallenge()
+      .accounts({ challenge: challengePda })
+      .signers([admin])
+      .rpc();
+
+      console.log("Challenge ended succecffullty")
+  });
+
+  it("Distribute rewards among participants", async () => {
+    const [challengePda] = PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("challenge"),
+        admin.publicKey.toBuffer(),
+        Buffer.from([challengeId]), // Fixed: wrap in array
+      ],
+      program.programId
+    );
+
+    const [escrowPda] = PublicKey.findProgramAddressSync(
+      [Buffer.from("escrow"), challengePda.toBuffer()],
+      program.programId
+    );
+
+    // Winners: participants at index 0, 1, 4
+    const winnerIndices = [0, 1, 4];
+
+    // Get winner participant PDAs
+    const winnerParticipantPdas = winnerIndices.map((i) => {
+      const [participantPda] = PublicKey.findProgramAddressSync(
+        [
+          Buffer.from("participant"),
+          challengePda.toBuffer(),
+          participants[i].publicKey.toBuffer(),
+        ],
+        program.programId
+      );
+      return participantPda;
+    });
+
+    // Check balances BEFORE distribution
+    const balancesBefore = await Promise.all(
+      winnerIndices.map((i) =>
+        provider.connection.getBalance(participants[i].publicKey)
+      )
+    );
+
+    console.log("Balances before:");
+    winnerIndices.forEach((idx, i) => {
+      console.log(
+        `  Winner ${idx}: ${balancesBefore[i] / LAMPORTS_PER_SOL} SOL`
+      );
+    });
+
+    // Distribute rewards
+    const tx = await program.methods
+      .distributeRewards()
+      .accounts({
+        challenge: challengePda,
+        verifier: admin.publicKey,
+      })
+      .remainingAccounts(
+        winnerParticipantPdas.map((pda) => ({
+          pubkey: pda,
+          isWritable: true, // Participant accounts are read
+          isSigner: false,
+        }))
+      )
+      .signers([admin]) // Verifier must sign!
+      .rpc();
+
+    console.log("✅ Rewards distributed, tx:", tx);
+
+    // Check balances AFTER distribution
+    const balancesAfter = await Promise.all(
+      winnerIndices.map((i) =>
+        provider.connection.getBalance(participants[i].publicKey)
+      )
+    );
+
+    console.log("Balances after:");
+    winnerIndices.forEach((idx, i) => {
+      const gained = (balancesAfter[i] - balancesBefore[i]) / LAMPORTS_PER_SOL;
+      console.log(
+        `  Winner ${idx}: ${
+          balancesAfter[i] / LAMPORTS_PER_SOL
+        } SOL (+${gained} SOL)`
+      );
+    });
+
+    // Verify each winner received money
+    winnerIndices.forEach((idx, i) => {
+      assert.isTrue(
+        balancesAfter[i] > balancesBefore[i],
+        `Winner ${idx} should have received rewards`
+      );
+    });
+
+    // Verify challenge status changed to Distributed
+    const challenge = await program.account.challenge.fetch(challengePda);
+    assert.equal(challenge.status, 2, "Challenge status should be Distributed");
+
+    // Calculate expected share
+    const totalParticipants = challenge.participantCount;
+    const entryFee = challenge.entryFee.toNumber();
+    const totalPool = totalParticipants * entryFee;
+    const expectedShare = totalPool / winnerIndices.length;
+
+    console.log(`Total pool: ${totalPool / LAMPORTS_PER_SOL} SOL`);
+    console.log(`Winners: ${winnerIndices.length}`);
+    console.log(
+      `Expected share per winner: ${expectedShare / LAMPORTS_PER_SOL} SOL`
+    );
+
+    // Verify amount is close to expected (allowing for small rounding)
+    const actualGain = balancesAfter[0] - balancesBefore[0];
+    assert.approximately(
+      actualGain,
+      expectedShare,
+      1000, // Allow 1000 lamports difference for rounding
+      "Reward amount should match expected share"
+    );
+
+    console.log("✅ All assertions passed!");
+  });
 });

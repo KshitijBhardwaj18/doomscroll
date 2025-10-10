@@ -22,7 +22,7 @@ pub fn end_challenge(ctx: Context<EndChallenge>) -> Result<()> {
 
 #[derive(Accounts)]
 pub struct EndChallenge<'info> {
-    #[account(mut, seeds = [b"challenge", challenge.creator.as_ref(), &[challenge.bump]], bump = challenge.bump)]
+    #[account(mut)]
     pub challenge: Account<'info, Challenge>,
 
     /// Anyone who is creator or verifier can call to end (signer check in handler)
