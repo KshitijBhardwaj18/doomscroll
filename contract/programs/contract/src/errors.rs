@@ -24,4 +24,6 @@ pub enum ErrorCode {
     DivideByZero,
     #[msg("Challenge already started")]
     ChallengeAlreadyStarted,
+    #[msg("Invalid Challenge Id")]
+    InvalidChallengeId
 }

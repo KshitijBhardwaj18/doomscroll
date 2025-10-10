@@ -6,13 +6,17 @@ use crate::errors::ErrorCode;
 
 pub fn create_challenge(
     ctx: Context<CreateChallenge>,
+    challenge_id:u8,
     entry_fee: u64,
     doom_threshold_minutes: u64,
     start_time: i64,
     end_time: i64,
 ) -> Result<()> {
     let counter = &mut ctx.accounts.global_counter;
-    let challenge_id = counter.challenge_count;
+    require!(
+        challenge_id == counter.challenge_count,
+        ErrorCode::InvalidChallengeId
+    );
 
     let challenge = &mut ctx.accounts.challenge;
     challenge.id = challenge_id;
@@ -31,7 +35,7 @@ pub fn create_challenge(
 }
 
 #[derive(Accounts)]
-#[instruction(entry_fee: u64, doom_threshold_minutes: u64, start_time: i64, end_time: i64)]
+#[instruction(challenge_id:u8,entry_fee: u64, doom_threshold_minutes: u64, start_time: i64, end_time: i64)]
 pub struct CreateChallenge<'info> {
 
     #[account(
@@ -44,7 +48,7 @@ pub struct CreateChallenge<'info> {
     pub global_counter: Account<'info, GlobalCounter>,
 
 
-    #[account(init, payer = creator, space = Challenge::space(), seeds = [b"challenge", creator.key().as_ref()], bump)]
+    #[account(init, payer = creator, space = Challenge::space(), seeds = [b"challenge", creator.key().as_ref(), &[challenge_id]], bump)]
     /// CHECK: seeds bumped in runtime with bump passed implicitly — we'll recompute bump via ctx.bumps
     pub challenge: Account<'info, Challenge>,
 

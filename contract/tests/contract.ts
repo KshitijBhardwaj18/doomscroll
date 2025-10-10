@@ -1,7 +1,13 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { Doomscroll } from "../target/types/doomscroll";
-import { Keypair, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import {
+  Keypair,
+  LAMPORTS_PER_SOL,
+  PublicKey,
+  SystemProgram,
+} from "@solana/web3.js";
+import { assert } from "chai";
 
 describe("contract", () => {
   // Configure the client to use the local cluster.
@@ -45,6 +51,32 @@ describe("contract", () => {
   });
 
   it("Create a challenge", async () => {
-    
+    const [globalCounterPda] = PublicKey.findProgramAddressSync(
+      [Buffer.from("global_counter")],
+      program.programId
+    );
+
+    const [challengePda] = PublicKey.findProgramAddressSync(
+      [Buffer.from("challenge"), admin.publicKey.toBuffer()],
+      program.programId
+    );
+
+    const entryFee = new anchor.BN(0.3 * LAMPORTS_PER_SOL);
+    const thresholdMinutes = new anchor.BN(2);
+    const now = Math.floor(Date.now() / 1000);
+    const tenMinutes = 10 * 60;
+
+    const startTime = new anchor.BN(now + tenMinutes); // Starts in 10 minutes
+    const endTime = new anchor.BN(now + tenMinutes * 2);
+
+    await program.methods
+      .createChallenge(entryFee, thresholdMinutes, startTime, endTime)
+      .accounts({
+        verifier: admin.publicKey,
+      })
+      .signers([admin])
+      .rpc();
   });
+
+  
 });
