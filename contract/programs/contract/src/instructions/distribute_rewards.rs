@@ -91,7 +91,9 @@ pub fn distribute_rewards<'info>(ctx: Context<'_, '_, '_, 'info, DistributeRewar
 pub struct DistributeRewards<'info> {
     #[account(mut)]
     pub challenge: Account<'info, Challenge>,
-
+    /// CHECK: The escrow  is an arbitrary account that will be allowed to call distribute_rewards.
+    /// The account which will be allowed to call distribute_rewards (your backend key)
+    /// This can be a PDA or normal keypair; keep it secure.
     #[account(mut, seeds = [b"escrow", challenge.key().as_ref()], bump )]
     pub escrow: UncheckedAccount<'info>,
 

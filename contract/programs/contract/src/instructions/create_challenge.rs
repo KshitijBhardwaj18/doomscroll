@@ -50,7 +50,7 @@ pub struct CreateChallenge<'info> {
 
     #[account(mut)]
     pub creator: Signer<'info>,
-
+    /// CHECK: The verifier is an arbitrary account that will be allowed to call distribute_rewards.
     /// The account which will be allowed to call distribute_rewards (your backend key)
     /// This can be a PDA or normal keypair; keep it secure.
     pub verifier: UncheckedAccount<'info>,
