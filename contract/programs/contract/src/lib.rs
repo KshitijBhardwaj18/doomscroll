@@ -22,6 +22,7 @@ pub mod doomscroll {
     /// Creator initializes a new challenge with entry fee, time bounds, etc.
     pub fn create_challenge(
         ctx: Context<CreateChallenge>,
+        challenge_id:u8,
         entry_fee: u64,
         doom_threshold_minutes: u64,
         start_time: i64,
@@ -29,6 +30,7 @@ pub mod doomscroll {
     ) -> Result<()> {
         instructions::create_challenge::create_challenge(
             ctx,
+            challenge_id,
             entry_fee,
             doom_threshold_minutes,
             start_time,

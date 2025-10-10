@@ -15,6 +15,22 @@ describe("contract", () => {
   anchor.setProvider(provider);
   const program = anchor.workspace.Doomscroll as Program<Doomscroll>;
 
+  async function getNextChallengeId(): Promise<number> {
+    const [globalCounterPda] = PublicKey.findProgramAddressSync(
+      [Buffer.from("global_counter")],
+      program.programId
+    );
+
+    try {
+      const counter = await program.account.globalCounter.fetch(
+        globalCounterPda
+      );
+      return counter.challengeCount;
+    } catch {
+      return 0; // First challenge
+    }
+  }
+
   let admin: Keypair;
   let participants: Keypair[];
 
@@ -51,15 +67,14 @@ describe("contract", () => {
   });
 
   it("Create a challenge", async () => {
-    const [globalCounterPda] = PublicKey.findProgramAddressSync(
-      [Buffer.from("global_counter")],
+
+    const challengeId = await getNextChallengeId();
+    const [challengePda] = PublicKey.findProgramAddressSync(
+      [Buffer.from("challenge"), admin.publicKey.toBuffer(),Buffer.from([challengeId])],
       program.programId
     );
 
-    const [challengePda] = PublicKey.findProgramAddressSync(
-      [Buffer.from("challenge"), admin.publicKey.toBuffer()],
-      program.programId
-    );
+   
 
     const entryFee = new anchor.BN(0.3 * LAMPORTS_PER_SOL);
     const thresholdMinutes = new anchor.BN(2);
@@ -70,9 +85,17 @@ describe("contract", () => {
     const endTime = new anchor.BN(now + tenMinutes * 2);
 
     await program.methods
-      .createChallenge(entryFee, thresholdMinutes, startTime, endTime)
+      .createChallenge(
+        challengeId,
+        entryFee,
+        thresholdMinutes,
+        startTime,
+        endTime
+      )
       .accounts({
+        creator: admin.publicKey,
         verifier: admin.publicKey,
+        challenge: challengePda
       })
       .signers([admin])
       .rpc();
