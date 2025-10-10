@@ -55,7 +55,7 @@ pub fn join_challenge(ctx: Context<JoinChallenge>) -> Result<()> {
 
 #[derive(Accounts)]
 pub struct JoinChallenge<'info> {
-    #[account(mut, seeds = [b"challenge", challenge.creator.as_ref(), &[challenge.bump]], bump = challenge.bump)]
+    #[account(mut)]
     pub challenge: Account<'info, Challenge>,
 
     /// Participant payer (signer)

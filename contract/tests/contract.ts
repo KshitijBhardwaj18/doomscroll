@@ -33,6 +33,7 @@ describe("contract", () => {
 
   let admin: Keypair;
   let participants: Keypair[];
+  let challengeId;
 
   before(async () => {
     console.log("Setting up admin account");
@@ -67,22 +68,24 @@ describe("contract", () => {
   });
 
   it("Create a challenge", async () => {
-
-    const challengeId = await getNextChallengeId();
+    challengeId = await getNextChallengeId();
     const [challengePda] = PublicKey.findProgramAddressSync(
-      [Buffer.from("challenge"), admin.publicKey.toBuffer(),Buffer.from([challengeId])],
+      [
+        Buffer.from("challenge"),
+        admin.publicKey.toBuffer(),
+        Buffer.from([challengeId]),
+      ],
       program.programId
     );
-
-   
 
     const entryFee = new anchor.BN(0.3 * LAMPORTS_PER_SOL);
     const thresholdMinutes = new anchor.BN(2);
     const now = Math.floor(Date.now() / 1000);
     const tenMinutes = 10 * 60;
 
-    const startTime = new anchor.BN(now + tenMinutes); // Starts in 10 minutes
-    const endTime = new anchor.BN(now + tenMinutes * 2);
+    const startTime = new anchor.BN(now - tenMinutes); // Starts in 10 minutes
+
+    const endTime = new anchor.BN(now);
 
     await program.methods
       .createChallenge(
@@ -95,11 +98,48 @@ describe("contract", () => {
       .accounts({
         creator: admin.publicKey,
         verifier: admin.publicKey,
-        challenge: challengePda
+        challenge: challengePda,
       })
       .signers([admin])
       .rpc();
+    const challenge = await program.account.challenge.fetch(challengePda);
+    assert.equal(challenge.id, challengeId);
+    assert.equal(challenge.participantCount, 0);
+    console.log("✅ Challenge created successfully");
+
+    console.log("Create test - Admin:", admin.publicKey.toString());
+    console.log("Create test - Challenge ID:", challengeId);
+    console.log("Create test - Challenge PDA:", challengePda.toString());
   });
 
-  
+  it("Participants joins a challange", async () => {
+    // Derive challenge PDA
+    const [challengePda] = PublicKey.findProgramAddressSync(
+      [
+        Buffer.from("challenge"),
+        admin.publicKey.toBuffer(),
+        Buffer.from([challengeId]),
+      ],
+      program.programId
+    );
+    console.log("Join test - Admin:", admin.publicKey.toString());
+    console.log("Join test - Challenge ID:", challengeId);
+    console.log("Join test - Challenge PDA:", challengePda.toString());
+    for (const participant of participants) {
+      const tx = await program.methods
+        .joinChallenge()
+        .accounts({ challenge: challengePda, payer: participant.publicKey })
+        .signers([participant])
+        .rpc();
+    }
+
+    const count = (await program.account.challenge.fetch(challengePda))
+      .participantCount;
+
+    console.log("Participant count", count);
+  });
+
+  it("Distribute rewards amoung participants", async () => {
+    const 
+  })
 });
