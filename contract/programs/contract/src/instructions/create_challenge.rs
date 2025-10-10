@@ -31,7 +31,7 @@ pub fn create_challenge(
 }
 
 #[derive(Accounts)]
-#[instruction(challenge_id:u8,entry_fee: u64, doom_threshold_minutes: u64, start_time: i64, end_time: i64)]
+#[instruction(entry_fee: u64, doom_threshold_minutes: u64, start_time: i64, end_time: i64)]
 pub struct CreateChallenge<'info> {
 
     #[account(
@@ -44,7 +44,7 @@ pub struct CreateChallenge<'info> {
     pub global_counter: Account<'info, GlobalCounter>,
 
 
-    #[account(init, payer = creator, space = Challenge::space(), seeds = [b"challenge", creator.key().as_ref(), &[challenge_id]], bump)]
+    #[account(init, payer = creator, space = Challenge::space(), seeds = [b"challenge", creator.key().as_ref()], bump)]
     /// CHECK: seeds bumped in runtime with bump passed implicitly — we'll recompute bump via ctx.bumps
     pub challenge: Account<'info, Challenge>,
 
