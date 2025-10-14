@@ -1,0 +1,59 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Challenge {
+  id                 String              @id @default(uuid())
+  challengeId        Int                 @unique
+  challengePda       String              @unique
+  creator            String
+  entryFee           BigInt
+  doomThreshold      Int
+  startTime          DateTime
+  endTime            DateTime
+  status             Int
+  participantCount   Int                 @default(0)
+  totalPool          BigInt              @default(0)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  participants       Participant[]
+  screenTimeReports  ScreenTimeReport[]
+}
+
+model Participant {
+  id                String              @id @default(uuid())
+  wallet            String
+  challengeId       String
+  challenge         Challenge           @relation(fields: [challengeId], references: [id])
+  participantPda    String              @unique
+  deposited         BigInt
+  joinedAt          DateTime
+  disqualified      Boolean             @default(false)
+  createdAt         DateTime            @default(now())
+  screenTimeReports ScreenTimeReport[]
+
+  @@unique([wallet, challengeId])
+  @@index([challengeId])
+  @@index([wallet])
+}
+
+model ScreenTimeReport {
+  id                 String      @id @default(uuid())
+  wallet             String
+  challengeId        String
+  challenge          Challenge   @relation(fields: [challengeId], references: [id])
+  participant        Participant @relation(fields: [wallet, challengeId], references: [wallet, challengeId])
+  socialMediaMinutes Int
+  appBreakdown       Json?
+  reportedAt         DateTime
+  createdAt          DateTime    @default(now())
+
+  @@index([challengeId])
+  @@index([wallet, challengeId])
+}
+
