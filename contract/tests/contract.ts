@@ -144,18 +144,18 @@ describe("contract", () => {
       [
         Buffer.from("challenge"),
         admin.publicKey.toBuffer(),
-        Buffer.from(challengeId),
+        Buffer.from([challengeId]),
       ],
       program.programId
     );
 
     const tx = await program.methods
       .endChallenge()
-      .accounts({ challenge: challengePda })
+      .accounts({ challenge: challengePda, signer: admin.publicKey })
       .signers([admin])
       .rpc();
 
-      console.log("Challenge ended succecffullty")
+    console.log("Challenge ended succecffullty");
   });
 
   it("Distribute rewards among participants", async () => {
@@ -173,6 +173,8 @@ describe("contract", () => {
       program.programId
     );
 
+    console.log("Challenge PDA for disribution", challengePda);
+
     // Winners: participants at index 0, 1, 4
     const winnerIndices = [0, 1, 4];
 
@@ -186,6 +188,8 @@ describe("contract", () => {
         ],
         program.programId
       );
+
+      console.log(`Participant ${i} - `, participantPda);
       return participantPda;
     });
 
@@ -203,6 +207,16 @@ describe("contract", () => {
       );
     });
 
+    // Build remaining accounts as pairs: [participant_pda, user_system_account, ...]
+    const remaining = winnerIndices.flatMap((idx, i) => [
+      { pubkey: winnerParticipantPdas[i], isWritable: true, isSigner: false },
+      {
+        pubkey: participants[idx].publicKey,
+        isWritable: true,
+        isSigner: false,
+      },
+    ]);
+
     // Distribute rewards
     const tx = await program.methods
       .distributeRewards()
@@ -210,14 +224,8 @@ describe("contract", () => {
         challenge: challengePda,
         verifier: admin.publicKey,
       })
-      .remainingAccounts(
-        winnerParticipantPdas.map((pda) => ({
-          pubkey: pda,
-          isWritable: true, // Participant accounts are read
-          isSigner: false,
-        }))
-      )
-      .signers([admin]) // Verifier must sign!
+      .remainingAccounts(remaining)
+      .signers([admin])
       .rpc();
 
     console.log("✅ Rewards distributed, tx:", tx);

@@ -1,12 +1,10 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::{system_instruction, program::invoke_signed};
-use borsh::BorshDeserialize;
+use anchor_lang::AccountDeserialize;
 use crate::state::{Challenge, ChallengeStatus, Participant};
 use crate::errors::ErrorCode;
 
-fn try_from_slice_unchecked<T: BorshDeserialize>(data: &[u8]) -> Result<T> {
-    T::try_from_slice(data).map_err(|_| error!(ErrorCode::AccountDeserializeError))
-}
+// NOTE: We use Anchor's AccountDeserialize below to read Participant from raw AccountInfo
 
 // Note the explicit lifetime parameter 'info here
 pub fn distribute_rewards<'info>(ctx: Context<'_, '_, '_, 'info, DistributeRewards<'info>>) -> Result<()> {
@@ -21,10 +19,13 @@ pub fn distribute_rewards<'info>(ctx: Context<'_, '_, '_, 'info, DistributeRewar
         ErrorCode::Unauthorized
     );
 
-    // Admin (verifier) passes list of winner participant accounts in remaining_accounts
-    // Anyone not in this list is effectively disqualified
-    let winners_count = ctx.remaining_accounts.len() as u64;
-    require!(winners_count > 0, ErrorCode::NoWinnersProvided);
+    // Admin (verifier) passes winners as PAIRS in remaining_accounts:
+    // [participant_pda_0, user_system_0, participant_pda_1, user_system_1, ...]
+    // Validate non-empty and even length
+    let rem_len = ctx.remaining_accounts.len();
+    require!(rem_len > 0, ErrorCode::NoWinnersProvided);
+    require!(rem_len % 2 == 0, ErrorCode::AccountDeserializeError);
+    let winners_count = (rem_len / 2) as u64;
 
     // calculate total pool = participant_count * entry_fee
     let total_pool = ctx
@@ -42,21 +43,21 @@ pub fn distribute_rewards<'info>(ctx: Context<'_, '_, '_, 'info, DistributeRewar
     let challenge_key = ctx.accounts.challenge.key();
     let escrow_bump = ctx.bumps.escrow;
 
-    // Iterate through winner participant accounts  
-    let num_winners = ctx.remaining_accounts.len();
-    for i in 0..num_winners {
-        let participant_ai = &ctx.remaining_accounts[i];
-        
-        // deserialize participant account
-        let participant_data: Participant =
-            try_from_slice_unchecked(&participant_ai.data.borrow())?;
+    // Iterate over winner pairs
+    for i in 0..(winners_count as usize) {
+        let participant_ai = &ctx.remaining_accounts[2 * i];
+        let user_ai = &ctx.remaining_accounts[2 * i + 1];
 
-        // verify participant belongs to this challenge and has deposited > 0
-        require!(
-            participant_data.challenge == challenge_key,
-            ErrorCode::ParticipantMismatch
-        );
+        // Deserialize participant account using Anchor
+        let mut data_slice = &participant_ai.data.borrow()[..];
+        let participant_data = Participant::try_deserialize_unchecked(&mut data_slice)
+            .map_err(|_| error!(ErrorCode::AccountDeserializeError))?;
+
+        // Verify participant belongs to this challenge and has a deposit
+        require!(participant_data.challenge == challenge_key, ErrorCode::ParticipantMismatch);
         require!(participant_data.deposited > 0, ErrorCode::NoDepositForParticipant);
+        // Verify the provided user system account matches participant.user
+        require!(participant_data.user == user_ai.key(), ErrorCode::ParticipantMismatch);
 
         // escrow PDA seeds
         let escrow_seeds: &[&[u8]] = &[
@@ -65,15 +66,15 @@ pub fn distribute_rewards<'info>(ctx: Context<'_, '_, '_, 'info, DistributeRewar
             &[escrow_bump],
         ];
 
-        // Transfer share from escrow PDA directly to participant
-        let ix = system_instruction::transfer(&ctx.accounts.escrow.key(), &participant_data.user, share);
+        // Transfer share from escrow PDA directly to user's system account
+        let ix = system_instruction::transfer(&ctx.accounts.escrow.key(), &user_ai.key(), share);
 
         // invoke_signed: escrow PDA is program-derived and must sign
         invoke_signed(
             &ix,
             &[
                 ctx.accounts.escrow.to_account_info(),
-                participant_ai.clone(),
+                user_ai.clone(),
                 ctx.accounts.system_program.to_account_info(),
             ],
             &[escrow_seeds],
