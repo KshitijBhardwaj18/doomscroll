@@ -1,0 +1,483 @@
+{
+  "address": "Ae8MNwoRtR9R816pBVg5cWC5nbjTdu7pY394thVZMzzR",
+  "metadata": {
+    "name": "doomscroll",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "create_challenge",
+      "docs": [
+        "Creator initializes a new challenge with entry fee, time bounds, etc."
+      ],
+      "discriminator": [
+        170,
+        244,
+        47,
+        1,
+        1,
+        15,
+        173,
+        239
+      ],
+      "accounts": [
+        {
+          "name": "global_counter",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  108,
+                  111,
+                  98,
+                  97,
+                  108,
+                  95,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                  101,
+                  114
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "challenge",
+          "writable": true
+        },
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "verifier",
+          "docs": [
+            "The account which will be allowed to call distribute_rewards (your backend key)",
+            "This can be a PDA or normal keypair; keep it secure."
+          ]
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "system program"
+          ],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "challenge_id",
+          "type": "u8"
+        },
+        {
+          "name": "entry_fee",
+          "type": "u64"
+        },
+        {
+          "name": "doom_threshold_minutes",
+          "type": "u64"
+        },
+        {
+          "name": "start_time",
+          "type": "i64"
+        },
+        {
+          "name": "end_time",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "distribute_rewards",
+      "docs": [
+        "Distribute rewards to winners. Only the verifier key can call this.",
+        "winners are passed as participant accounts in the accounts array (variable length)"
+      ],
+      "discriminator": [
+        97,
+        6,
+        227,
+        255,
+        124,
+        165,
+        3,
+        148
+      ],
+      "accounts": [
+        {
+          "name": "challenge",
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "The account which will be allowed to call distribute_rewards (your backend key)",
+            "This can be a PDA or normal keypair; keep it secure."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "challenge"
+              }
+            ]
+          }
+        },
+        {
+          "name": "verifier",
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "end_challenge",
+      "docs": [
+        "Optionally mark challenge ended (callable by creator or verifier)"
+      ],
+      "discriminator": [
+        75,
+        127,
+        244,
+        168,
+        9,
+        187,
+        215,
+        14
+      ],
+      "accounts": [
+        {
+          "name": "challenge",
+          "writable": true
+        },
+        {
+          "name": "signer",
+          "docs": [
+            "Anyone who is creator or verifier can call to end (signer check in handler)"
+          ],
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "join_challenge",
+      "docs": [
+        "Participant joins and transfers lamports to escrow PDA."
+      ],
+      "discriminator": [
+        41,
+        104,
+        214,
+        73,
+        32,
+        168,
+        76,
+        79
+      ],
+      "accounts": [
+        {
+          "name": "challenge",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "docs": [
+            "Participant payer (signer)"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "participant",
+          "docs": [
+            "Participant PDA account to create, associated with challenge + user",
+            "Seed: [\"participant\", challenge_key, user_pubkey]"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  114,
+                  116,
+                  105,
+                  99,
+                  105,
+                  112,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "challenge"
+              },
+              {
+                "kind": "account",
+                "path": "payer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "Escrow account (PDA) where all join deposits are collected",
+            "This is a system account, created beforehand during challenge creation or created on-demand.",
+            "We assume it exists and is a PDA with seeds [\"escrow\", challenge.key()]",
+            "Mark as mut because we'll accept lamports into it"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "challenge"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Challenge",
+      "discriminator": [
+        119,
+        250,
+        161,
+        121,
+        119,
+        81,
+        22,
+        208
+      ]
+    },
+    {
+      "name": "GlobalCounter",
+      "discriminator": [
+        42,
+        206,
+        176,
+        58,
+        175,
+        129,
+        130,
+        233
+      ]
+    },
+    {
+      "name": "Participant",
+      "discriminator": [
+        32,
+        142,
+        108,
+        79,
+        247,
+        179,
+        54,
+        6
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "ChallengeNotActive",
+      "msg": "Challenge is not active"
+    },
+    {
+      "code": 6001,
+      "name": "ChallengeNotEnded",
+      "msg": "Challenge is not ended"
+    },
+    {
+      "code": 6002,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    },
+    {
+      "code": 6003,
+      "name": "Overflow",
+      "msg": "Overflow"
+    },
+    {
+      "code": 6004,
+      "name": "ParticipantMismatch",
+      "msg": "Participant does not belong to challenge"
+    },
+    {
+      "code": 6005,
+      "name": "NoDepositForParticipant",
+      "msg": "Participant has no deposit"
+    },
+    {
+      "code": 6006,
+      "name": "AccountDeserializeError",
+      "msg": "Account deserialization failed"
+    },
+    {
+      "code": 6007,
+      "name": "InvalidWinnersAccounts",
+      "msg": "Invalid winners accounts provided"
+    },
+    {
+      "code": 6008,
+      "name": "NoWinnersProvided",
+      "msg": "No winners provided"
+    },
+    {
+      "code": 6009,
+      "name": "DivideByZero",
+      "msg": "Divide by zero"
+    },
+    {
+      "code": 6010,
+      "name": "ChallengeAlreadyStarted",
+      "msg": "Challenge already started"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidChallengeId",
+      "msg": "Invalid Challenge Id"
+    }
+  ],
+  "types": [
+    {
+      "name": "Challenge",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "u8"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "entry_fee",
+            "type": "u64"
+          },
+          {
+            "name": "doom_threshold_minutes",
+            "type": "u64"
+          },
+          {
+            "name": "start_time",
+            "type": "i64"
+          },
+          {
+            "name": "end_time",
+            "type": "i64"
+          },
+          {
+            "name": "participant_count",
+            "type": "u32"
+          },
+          {
+            "name": "verifier",
+            "type": "pubkey"
+          },
+          {
+            "name": "status",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GlobalCounter",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "challenge_count",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Participant",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "challenge",
+            "type": "pubkey"
+          },
+          {
+            "name": "deposited",
+            "type": "u64"
+          },
+          {
+            "name": "joined_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

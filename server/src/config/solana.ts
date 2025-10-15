@@ -4,7 +4,7 @@ import { readFileSync } from "fs";
 import { env } from "./env";
 
 // Load program IDL (you'll need to copy this from your contract build)
-import idl from "../../../contract/target/idl/contract.json";
+import idl from "../idl/doomscroll.json";
 
 let connection: Connection;
 let program: Program;

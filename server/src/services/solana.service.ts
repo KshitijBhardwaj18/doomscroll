@@ -131,6 +131,83 @@ export const fetchAllParticipants = async (
 };
 
 /**
+ * Create a new challenge on-chain (Admin only)
+ */
+export const createChallenge = async (params: {
+  entryFee: number;
+  doomThreshold: number;
+  startTime: number;
+  endTime: number;
+}): Promise<{
+  signature: string;
+  challengeId: number;
+  challengePda: string;
+}> => {
+  try {
+    const program = getProgram();
+    const verifier = getVerifierKeypair();
+
+    // Fetch current challenge count
+    const challengeCount = await fetchGlobalCounter();
+    const challengeId = challengeCount;
+
+    // Derive PDAs
+    const [globalCounterPda] = PublicKey.findProgramAddressSync(
+      [Buffer.from("global_counter")],
+      program.programId
+    );
+
+    const [challengePda] = deriveChallengePda(verifier.publicKey, challengeId);
+
+    const [escrowPda] = PublicKey.findProgramAddressSync(
+      [Buffer.from("escrow"), challengePda.toBuffer()],
+      program.programId
+    );
+
+    console.log(`Creating challenge #${challengeId}...`);
+    console.log(`  Entry Fee: ${params.entryFee} lamports`);
+    console.log(`  Doom Threshold: ${params.doomThreshold} minutes`);
+    console.log(
+      `  Start Time: ${new Date(params.startTime * 1000).toISOString()}`
+    );
+    console.log(`  End Time: ${new Date(params.endTime * 1000).toISOString()}`);
+
+    // Call create_challenge instruction
+    const tx = await program.methods
+      .createChallenge(
+        new anchor.BN(params.entryFee),
+        params.doomThreshold,
+        new anchor.BN(params.startTime),
+        new anchor.BN(params.endTime)
+      )
+      .accounts({
+        creator: verifier.publicKey,
+        challenge: challengePda,
+        globalCounter: globalCounterPda,
+        escrow: escrowPda,
+        verifier: verifier.publicKey,
+        systemProgram: SystemProgram.programId,
+      })
+      .signers([verifier])
+      .rpc();
+
+    console.log(`✅ Challenge created successfully!`);
+    console.log(`   Challenge ID: ${challengeId}`);
+    console.log(`   Challenge PDA: ${challengePda.toBase58()}`);
+    console.log(`   Transaction: ${tx}`);
+
+    return {
+      signature: tx,
+      challengeId,
+      challengePda: challengePda.toBase58(),
+    };
+  } catch (error) {
+    console.error("Error creating challenge:", error);
+    throw error;
+  }
+};
+
+/**
  * Call distribute_rewards instruction on-chain
  */
 export const distributeRewards = async (

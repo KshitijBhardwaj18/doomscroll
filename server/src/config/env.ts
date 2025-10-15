@@ -10,6 +10,7 @@ const envSchema = z.object({
   SOLANA_NETWORK: z.enum(["devnet", "testnet", "mainnet-beta"]),
   PROGRAM_ID: z.string(),
   VERIFIER_KEYPAIR_PATH: z.string(),
+  ADMIN_SECRET_KEY: z.string(),
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),

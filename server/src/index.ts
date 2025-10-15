@@ -8,6 +8,7 @@ import { prisma } from "./config/database";
 import authRoutes from "./routes/auth.routes";
 import challengeRoutes from "./routes/challenge.routes";
 import screentimeRoutes from "./routes/screentime.routes";
+import adminRoutes from "./routes/admin.routes";
 
 // Jobs
 import { startChallengeSyncJob } from "./jobs/syncChallenges.job";
@@ -34,6 +35,7 @@ app.get("/health", (req, res) => {
 app.use("/auth", authRoutes);
 app.use("/api/challenges", challengeRoutes);
 app.use("/api/screen-time", screentimeRoutes);
+app.use("/admin", adminRoutes);
 
 // 404 handler
 app.use((req, res) => {
@@ -81,18 +83,29 @@ const startServer = async () => {
       console.log(`   Network: ${env.SOLANA_NETWORK}`);
       console.log("\n📡 API Endpoints:");
       console.log("   GET  /health");
+      console.log("");
+      console.log("   Auth:");
       console.log("   POST /auth/verify");
       console.log("   GET  /auth/challenge");
+      console.log("");
+      console.log("   Challenges:");
       console.log("   GET  /api/challenges");
       console.log("   GET  /api/challenges/:id");
       console.log("   GET  /api/challenges/:id/participants");
       console.log("   GET  /api/challenges/:id/leaderboard");
       console.log("   POST /api/challenges/sync/:challengeId");
+      console.log("");
+      console.log("   Screen Time:");
       console.log("   POST /api/screen-time/report");
       console.log(
         "   GET  /api/screen-time/user/:wallet/challenge/:challengeId"
       );
       console.log("   GET  /api/screen-time/user/:wallet/challenges");
+      console.log("");
+      console.log("   Admin (requires x-admin-key header):");
+      console.log("   POST /admin/challenges/create");
+      console.log("   GET  /admin/challenges/count");
+      console.log("   GET  /admin/health");
       console.log("\n✨ Ready to accept requests!\n");
     });
   } catch (error) {
