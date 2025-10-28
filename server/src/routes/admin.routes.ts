@@ -31,17 +31,14 @@ router.post("/challenges/create", adminAuth, async (req, res) => {
         details: validation.error.errors,
       });
     }
-
-    const { entry_fee, doom_threshold, start_time, end_time } = validation.data;
-
     // Validate time logic
     const now = Math.floor(Date.now() / 1000);
-    if (start_time <= now) {
+    if (validation.data.start_time <= now) {
       return res.status(400).json({
         error: "Start time must be in the future",
       });
     }
-    if (end_time <= start_time) {
+    if (validation.data.end_time <= start_time) {
       return res.status(400).json({
         error: "End time must be after start time",
       });
