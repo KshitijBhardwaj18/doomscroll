@@ -38,12 +38,11 @@ export const initSolana = () => {
   });
 
   // Initialize program
-  const programId = new PublicKey(env.PROGRAM_ID);
-  program = new Program(idl as any, programId, provider);
+  program = new Program(idl as any, provider);
 
   console.log("✅ Solana initialized");
   console.log("   RPC:", env.SOLANA_RPC_URL);
-  console.log("   Program ID:", programId.toBase58());
+  console.log("   Program ID:", program.programId.toBase58());
 };
 
 export const getConnection = (): Connection => {

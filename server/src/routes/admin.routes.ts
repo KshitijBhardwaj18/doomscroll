@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
+import { PublicKey } from "@solana/web3.js";
 import { adminAuth } from "../middleware/admin.middleware";
 import * as solanaService from "../services/solana.service";
 import * as challengeService from "../services/challenge.service";
@@ -31,14 +32,16 @@ router.post("/challenges/create", adminAuth, async (req, res) => {
         details: validation.error.errors,
       });
     }
+    const { entry_fee, doom_threshold, start_time, end_time } = validation.data;
+
     // Validate time logic
     const now = Math.floor(Date.now() / 1000);
-    if (validation.data.start_time <= now) {
+    if (start_time <= now) {
       return res.status(400).json({
         error: "Start time must be in the future",
       });
     }
-    if (validation.data.end_time <= start_time) {
+    if (end_time <= start_time) {
       return res.status(400).json({
         error: "End time must be after start time",
       });
@@ -63,7 +66,8 @@ router.post("/challenges/create", adminAuth, async (req, res) => {
     console.log("📊 Syncing challenge to database...");
 
     // Sync to database
-    await challengeService.syncChallenge(result.challengeId);
+    const challengePda = new PublicKey(result.challengePda);
+    await challengeService.syncChallenge(challengePda, result.challengeId);
 
     console.log("✅ Challenge created and synced successfully!\n");
 
