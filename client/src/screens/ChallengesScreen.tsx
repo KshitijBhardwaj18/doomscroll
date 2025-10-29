@@ -1,13 +1,18 @@
-import { StyleSheet, View } from "react-native";
-import { Text } from "react-native-paper";
+import { View } from "react-native";
 import "../../global.css";
-import { Title } from "../components/screens/challenges/title";
+import { ChallengesAvailable } from "../components/screens/challenges/challengesAvailable";
+import { WalletGuard } from "../components/wallet/WalletGuard";
+import { PageHeader } from "../components/shared/PageHeader";
+
 export default function ChallengesScreen() {
   return (
-    <>
-      <View className="bg-primary h-full flex flex-col p-8">
-        <Title />
+    <WalletGuard>
+      <View className="bg-black h-full flex flex-col px-6 pt-8">
+        <PageHeader title="Challenges" />
+        <View className="flex-1">
+          <ChallengesAvailable />
+        </View>
       </View>
-    </>
+    </WalletGuard>
   );
 }

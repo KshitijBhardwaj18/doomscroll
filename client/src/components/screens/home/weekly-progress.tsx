@@ -97,30 +97,53 @@ export function WeeklyProgress({
             className="absolute items-center justify-center"
             style={{ width: size, height: size }}
           >
-            <Text className="text-white text-3xl font-bold">{percentage}%</Text>
+            <Text
+              style={{ fontFamily: "Poppins_700Bold" }}
+              className="text-white text-3xl"
+            >
+              {percentage}%
+            </Text>
           </View>
         </View>
 
         {/* Legend */}
         <View className="flex-1">
-          <Text className="text-white text-xl font-bold mb-4">
+          <Text
+            style={{ fontFamily: "Poppins_700Bold" }}
+            className="text-white text-xl mb-4"
+          >
             Weekly progress
           </Text>
 
           <View className="space-y-2">
             <View className="flex-row items-center mb-2">
               <View className="w-4 h-4 rounded-full bg-lime-500 mr-2" />
-              <Text className="text-lime-500 text-sm">Complete</Text>
+              <Text
+                style={{ fontFamily: "Poppins_500Medium" }}
+                className="text-lime-500 text-sm"
+              >
+                Complete
+              </Text>
             </View>
 
             <View className="flex-row items-center mb-2">
               <View className="w-4 h-4 rounded-full bg-yellow-500 mr-2" />
-              <Text className="text-yellow-500 text-sm">In progress</Text>
+              <Text
+                style={{ fontFamily: "Poppins_500Medium" }}
+                className="text-yellow-500 text-sm"
+              >
+                In progress
+              </Text>
             </View>
 
             <View className="flex-row items-center">
               <View className="w-4 h-4 rounded-full bg-red-500 mr-2" />
-              <Text className="text-red-500 text-sm">Incomplete</Text>
+              <Text
+                style={{ fontFamily: "Poppins_500Medium" }}
+                className="text-red-500 text-sm"
+              >
+                Incomplete
+              </Text>
             </View>
           </View>
         </View>

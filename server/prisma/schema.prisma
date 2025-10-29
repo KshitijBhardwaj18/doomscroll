@@ -7,6 +7,16 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model User {
+  id              String   @id @default(uuid())
+  wallet          String   @unique
+  name            String
+  email           String   @unique
+  doomscrollLimit Int      @default(60) // minutes per day
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
 model Challenge {
   id                 String              @id @default(uuid())
   challengeId        Int                 @unique

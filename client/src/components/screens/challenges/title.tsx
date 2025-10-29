@@ -1,11 +1,14 @@
-import { View,Text} from "react-native";
+import { View, Text } from "react-native";
 
 export function Title() {
-    return(
-        <View>
-            <Text className="text-white font-bold text-3xl">
-                Challenges
-            </Text>
-        </View>
-    )
+  return (
+    <View>
+      <Text
+        style={{ fontFamily: "Poppins_700Bold" }}
+        className="text-white text-3xl"
+      >
+        Challenges
+      </Text>
+    </View>
+  );
 }

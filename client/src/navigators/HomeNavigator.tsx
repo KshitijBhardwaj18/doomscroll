@@ -4,8 +4,7 @@ import { HomeScreen } from "../screens/HomeScreen";
 import { Ionicons } from "@expo/vector-icons";
 import ChallengesScreen from "../screens/ChallengesScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
-import { View,Text } from "react-native";
-
+import { View, Text } from "react-native";
 
 const Tab = createBottomTabNavigator();
 
@@ -20,7 +19,7 @@ export function HomeNavigator() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarShowLabel:false,
+        tabBarShowLabel: false,
         tabBarStyle: {
           backgroundColor: "#000000", // Black background
           borderTopWidth: 0, // Remove top border
@@ -38,7 +37,7 @@ export function HomeNavigator() {
         },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: keyof typeof Ionicons.glyphMap;
-          
+
           switch (route.name) {
             case "Home":
               iconName = focused ? "home" : "home-outline";
@@ -56,9 +55,12 @@ export function HomeNavigator() {
           // For the home button, add a background circle when focused
           if (route.name === "Home" && focused) {
             return (
-              <View className="flex items-center justify-center rounded-[2rem] p-2 px-8 bg-[##343434]">
+              <View className="flex items-center justify-center rounded-[2rem] p-2 px-8 bg-[#343434]">
                 <Ionicons name={iconName} size={24} color={color} />
-                <Text className="text-white">
+                <Text
+                  style={{ fontFamily: "Poppins_600SemiBold" }}
+                  className="text-white"
+                >
                   Home
                 </Text>
               </View>
@@ -67,9 +69,12 @@ export function HomeNavigator() {
 
           if (route.name === "Challenges" && focused) {
             return (
-              <View className="flex items-center justify-center rounded-[2rem] p-2 px-8 bg-[##343434]">
+              <View className="flex items-center justify-center rounded-[2rem] p-2 px-8 bg-[#343434]">
                 <Ionicons name={iconName} size={24} color={color} />
-                <Text className="text-white">
+                <Text
+                  style={{ fontFamily: "Poppins_600SemiBold" }}
+                  className="text-white"
+                >
                   Challenges
                 </Text>
               </View>
@@ -78,21 +83,13 @@ export function HomeNavigator() {
 
           if (route.name === "Profile" && focused) {
             return (
-              <View className="flex items-center justify-center rounded-[2rem] p-2 px-8 bg-[##343434]">
+              <View className="flex items-center justify-center rounded-[2rem] p-2 px-8 bg-[#343434]">
                 <Ionicons name={iconName} size={24} color={color} />
-                <Text className="text-white">
+                <Text
+                  style={{ fontFamily: "Poppins_600SemiBold" }}
+                  className="text-white"
+                >
                   Profile
-                </Text>
-              </View>
-            );
-          }
-
-          if (route.name === "Home" && focused) {
-            return (
-              <View className="flex items-center justify-center rounded-[2rem] p-2 px-8 bg-[##343434]">
-                <Ionicons name={iconName} size={24} color={color} />
-                <Text className="text-white">
-                  Home
                 </Text>
               </View>
             );

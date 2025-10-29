@@ -16,7 +16,10 @@ export function DailyProgress({ percentage = 58 }: DailyProgressProps) {
 
       {/* Progress Info */}
       <View className="flex-1 mx-4">
-        <Text className="text-white text-xl font-bold mb-2">
+        <Text
+          style={{ fontFamily: "Poppins_700Bold" }}
+          className="text-white text-xl mb-2"
+        >
           Daily Progress
         </Text>
         {/* Progress Bar */}
@@ -29,7 +32,12 @@ export function DailyProgress({ percentage = 58 }: DailyProgressProps) {
       </View>
 
       {/* Percentage */}
-      <Text className="text-white text-2xl font-bold">{percentage}%</Text>
+      <Text
+        style={{ fontFamily: "Poppins_700Bold" }}
+        className="text-white text-2xl"
+      >
+        {percentage}%
+      </Text>
     </View>
   );
 }

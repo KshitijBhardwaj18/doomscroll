@@ -9,6 +9,7 @@ import authRoutes from "./routes/auth.routes";
 import challengeRoutes from "./routes/challenge.routes";
 import screentimeRoutes from "./routes/screentime.routes";
 import adminRoutes from "./routes/admin.routes";
+import userRoutes from "./routes/user.routes";
 
 // Jobs
 import { startChallengeSyncJob } from "./jobs/syncChallenges.job";
@@ -33,6 +34,7 @@ app.get("/health", (req, res) => {
 
 // API Routes
 app.use("/auth", authRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api/challenges", challengeRoutes);
 app.use("/api/screen-time", screentimeRoutes);
 app.use("/admin", adminRoutes);

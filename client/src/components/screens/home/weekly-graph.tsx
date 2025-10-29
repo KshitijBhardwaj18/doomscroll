@@ -63,12 +63,11 @@ export function WeeklyGraph({ weekData }: WeeklyGraphProps) {
                   ]}
                 >
                   {/* Diagonal stripes overlay */}
-                  <View style={styles.stripesContainer}>
+                  <View>
                     {[...Array(15)].map((_, i) => (
                       <View
                         key={i}
                         style={[
-                          styles.stripe,
                           {
                             left: i * 10 - 5,
                           },
@@ -81,10 +80,16 @@ export function WeeklyGraph({ weekData }: WeeklyGraphProps) {
 
               {/* Labels */}
               <View className="items-center mt-1">
-                <Text className="text-xs font-semibold text-white mb-0.5">
+                <Text
+                  style={{ fontFamily: "Poppins_600SemiBold" }}
+                  className="text-xs text-white mb-0.5"
+                >
                   {day.date}
                 </Text>
-                <Text className="text-[10px] text-gray-500 uppercase">
+                <Text
+                  style={{ fontFamily: "Poppins_400Regular" }}
+                  className="text-[10px] text-gray-500 uppercase"
+                >
                   {getDayAbbrev(day.day)}
                 </Text>
               </View>

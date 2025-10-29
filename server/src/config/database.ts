@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 
-// Singleton pattern for Prisma Client
 class DatabaseClient {
   private static instance: PrismaClient;
 
@@ -25,7 +24,6 @@ class DatabaseClient {
 
 export const prisma = DatabaseClient.getInstance();
 
-// Graceful shutdown
 process.on("beforeExit", async () => {
   await DatabaseClient.disconnect();
 });

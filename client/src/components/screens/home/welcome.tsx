@@ -1,19 +1,29 @@
 import "../../../global.css";
-import { View, Text, TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { View, Text } from "react-native";
+import { WalletButton } from "../../wallet/WalletButton";
+import { useUser } from "../../../contexts/UserContext";
 
 export function Welcome() {
+  const { user } = useUser();
+
+  // Get first name from full name
+  const firstName = user?.name.split(" ")[0] || "User";
+
   return (
     <View className="flex-row justify-between items-center mb-4">
+      {/* Welcome Message */}
       <View className="flex-row items-center">
-        <Text className="text-white text-4xl font-bold">Hi Tyler</Text>
+        <Text
+          style={{ fontFamily: "Poppins_700Bold" }}
+          className="text-white text-4xl"
+        >
+          Hi {firstName}
+        </Text>
         <View className="w-3 h-3 bg-lime-500 rounded-full ml-2" />
       </View>
 
-      {/* Settings Button */}
-      <TouchableOpacity className="bg-gray-800 rounded-full p-3">
-        <Ionicons name="settings-outline" size={24} color="#9ca3af" />
-      </TouchableOpacity>
+      {/* Wallet Button */}
+      <WalletButton />
     </View>
   );
 }

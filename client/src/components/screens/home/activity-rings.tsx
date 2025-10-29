@@ -84,10 +84,18 @@ export function ActivityRings({ apps }: ActivityRingsProps) {
               <Ionicons name={app.icon} size={28} color={app.color} />
             </View>
             {/* Label and Minutes */}
-            <Text className="text-xs font-semibold text-white mb-0.5">
+            <Text
+              style={{ fontFamily: "Poppins_600SemiBold" }}
+              className="text-xs text-white mb-0.5"
+            >
               {app.minutes}m
             </Text>
-            <Text className="text-[10px] text-gray-500">{app.label}</Text>
+            <Text
+              style={{ fontFamily: "Poppins_400Regular" }}
+              className="text-[10px] text-gray-500"
+            >
+              {app.label}
+            </Text>
           </View>
         );
       })}
