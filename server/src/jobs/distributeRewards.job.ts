@@ -82,7 +82,7 @@ export const startRewardDistributionJob = () => {
         }
       }
 
-      console.log("✅ Reward distribution job completed");
+      // console.log("✅ Reward distribution job completed");
     } catch (error) {
       console.error("❌ Reward distribution job failed:", error);
     }

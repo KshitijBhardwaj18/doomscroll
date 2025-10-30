@@ -21,6 +21,13 @@ const PORT = parseInt(env.PORT);
 // Middleware
 app.use(cors());
 app.use(express.json());
+// server/src/index.ts - add RIGHT AFTER express.json() (line 23)
+app.use((req, res, next) => {
+  console.log(`📥 ${req.method} ${req.path}`);
+  console.log("Headers received:", JSON.stringify(req.headers, null, 2));
+  console.log("Body received:", req.body);
+  next();
+});
 app.use(express.urlencoded({ extended: true }));
 
 // Health check endpoint
@@ -73,8 +80,8 @@ const startServer = async () => {
 
     // Start cron jobs
     console.log("3️⃣  Starting background jobs...");
-    startChallengeSyncJob();
-    startRewardDistributionJob();
+    // startChallengeSyncJob();
+    // startRewardDistributionJob();
     console.log();
 
     // Start Express server

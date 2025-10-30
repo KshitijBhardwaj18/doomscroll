@@ -25,11 +25,15 @@ const signupSchema = z.object({
 router.post(
   "/check",
   authenticateWallet,
-  apiLimiter,
   async (req: Request, res: Response) => {
+    console.log("📝 [/api/user/check] Route handler reached");
     try {
       const validation = checkUserSchema.safeParse(req.body);
       if (!validation.success) {
+        console.log(
+          "❌ [/api/user/check] Validation failed:",
+          validation.error.errors
+        );
         return res.status(400).json({
           error: "Invalid request data",
           details: validation.error.errors,
@@ -37,18 +41,26 @@ router.post(
       }
 
       const { wallet } = validation.data;
+      console.log("📝 [/api/user/check] Checking wallet:", wallet);
 
       // Verify authenticated wallet matches requested wallet
       if (req.wallet !== wallet) {
+        console.log(
+          "❌ [/api/user/check] Wallet mismatch. Auth:",
+          req.wallet,
+          "Requested:",
+          wallet
+        );
         return res.status(403).json({
           error: "Cannot check other user's wallet",
         });
       }
 
       const result = await userService.checkUserExists(wallet);
+      console.log("✅ [/api/user/check] Result:", result);
       res.json(result);
     } catch (error: any) {
-      console.error("Error checking user:", error);
+      console.error("❌ [/api/user/check] Error:", error);
       res.status(500).json({ error: error.message });
     }
   }
