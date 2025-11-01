@@ -35,6 +35,7 @@ import {
 type RootStackParamList = {
   Home: undefined;
   Settings: undefined;
+  ChallengeDetail: { challengeId: string };
   // 🔥 Your screens go here
 };
 
@@ -56,6 +57,11 @@ export const AppStack = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="Settings" component={Screens.SettingsScreen} />
+      <Stack.Screen 
+        name="ChallengeDetail" 
+        component={Screens.ChallengeDetailScreen}
+        options={{ headerShown: false }}
+      />
       {/** 🔥 Your screens go here */}
     </Stack.Navigator>
   );

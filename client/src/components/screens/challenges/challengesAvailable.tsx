@@ -6,11 +6,9 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import { ChallengeCard } from "./challengeCard";
+import { ChallengeCard, ChallengeStatus, UserChallengeStatus } from "./challengeCard";
 import { useState } from "react";
-
-// Import local image
-const challengeImage = require("../../../../assets/challenge1.jpg");
+import { useNavigation } from "@react-navigation/native";
 
 interface Challenge {
   id: string;
@@ -19,8 +17,14 @@ interface Challenge {
   image: ImageSourcePropType | string;
   participants: number;
   entryFee: string;
-  duration: string;
-  isJoined: boolean;
+  doomThreshold: number;
+  startTime: Date;
+  endTime: Date;
+  status: ChallengeStatus;
+  userStatus: UserChallengeStatus;
+  currentUsage?: number;
+  userRank?: number;
+  totalPool?: string;
 }
 
 interface ChallengesAvailableProps {
@@ -30,53 +34,88 @@ interface ChallengesAvailableProps {
 export function ChallengesAvailable({ challenges }: ChallengesAvailableProps) {
   const [selectedFilter, setSelectedFilter] = useState<
     "all" | "joined" | "upcoming"
-  >("all");
+  >("joined");
+  const navigation = useNavigation();
 
-  // Default sample data
+  // Default sample data with new structure
   const defaultChallenges: Challenge[] = [
     {
       id: "1",
-      title: "Start a Healthy Lifestyle",
+      title: "7-Day Social Media Detox",
       description:
-        "Walk for 30 minutes every day, drink more water, and cut back on fast food. This goal helps you feel better both physically and mentally.",
-      image: challengeImage, // Local image
+        "Limit your social media usage to 60 minutes per day. Break free from doomscrolling and reclaim your time!",
+      image: require("../../../../assets/challenges/1.jpg"),
       participants: 124,
       entryFee: "0.5 SOL",
-      duration: "7 days",
-      isJoined: false,
+      doomThreshold: 60,
+      startTime: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // Started 2 days ago
+      endTime: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // Ends in 5 days
+      status: 'active',
+      userStatus: 'joined',
+      currentUsage: 45,
+      userRank: 12,
+      totalPool: "62 SOL",
     },
     {
       id: "2",
-      title: "Digital Detox Challenge",
+      title: "Weekend Warrior Challenge",
       description:
-        "Limit your social media usage to 30 minutes per day. Spend more time reading, exercising, or connecting with friends in person.",
-      image: challengeImage, // Local image
+        "Stay under 30 minutes of social media per day this weekend. Perfect for beginners!",
+      image: require("../../../../assets/challenges/2.jpg"),
       participants: 89,
       entryFee: "0.3 SOL",
-      duration: "14 days",
-      isJoined: false,
+      doomThreshold: 30,
+      startTime: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // Starts in 2 days
+      endTime: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000), // Ends in 4 days
+      status: 'upcoming',
+      userStatus: 'not_joined',
     },
     {
       id: "3",
-      title: "Early Bird Challenge",
+      title: "30-Day Digital Wellness",
       description:
-        "Wake up before 6 AM every day and start your morning with meditation or exercise. Transform your mornings, transform your life.",
-      image: challengeImage, // Local image
+        "The ultimate challenge: Keep your social media usage under 90 minutes daily for a full month. Transform your habits!",
+      image: require("../../../../assets/challenges/3.jpg"),
       participants: 56,
-      entryFee: "0.2 SOL",
-      duration: "21 days",
-      isJoined: true,
+      entryFee: "1.0 SOL",
+      doomThreshold: 90,
+      startTime: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000), // Started 25 days ago
+      endTime: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // Ended yesterday
+      status: 'ended',
+      userStatus: 'won',
+      currentUsage: 75,
+      userRank: 3,
+      totalPool: "56 SOL",
     },
     {
       id: "4",
-      title: "30-Day Fitness Challenge",
+      title: "Midweek Reset Challenge",
       description:
-        "Complete a 30-minute workout every day for 30 days. Build strength, endurance, and healthy habits that last a lifetime.",
-      image: challengeImage,
+        "A quick 3-day challenge to reset your scrolling habits. Stay under 45 minutes per day!",
+      image: require("../../../../assets/challenges/4.jpg"),
       participants: 203,
-      entryFee: "1.0 SOL",
-      duration: "30 days",
-      isJoined: true,
+      entryFee: "0.2 SOL",
+      doomThreshold: 45,
+      startTime: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+      endTime: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      status: 'ended',
+      userStatus: 'lost',
+      currentUsage: 65,
+      totalPool: "40.6 SOL",
+    },
+    {
+      id: "5",
+      title: "Extreme Focus Challenge",
+      description:
+        "For the dedicated: Keep social media under 15 minutes per day for 2 weeks. High risk, high reward!",
+      image: require("../../../../assets/challenges/5.jpg"),
+      participants: 34,
+      entryFee: "2.0 SOL",
+      doomThreshold: 15,
+      startTime: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+      endTime: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
+      status: 'upcoming',
+      userStatus: 'not_joined',
     },
   ];
 
@@ -84,8 +123,12 @@ export function ChallengesAvailable({ challenges }: ChallengesAvailableProps) {
 
   // Filter challenges based on selected filter
   const filteredChallenges = challengeList.filter((challenge) => {
-    if (selectedFilter === "joined") return challenge.isJoined;
-    if (selectedFilter === "upcoming") return !challenge.isJoined;
+    if (selectedFilter === "joined") {
+      return challenge.userStatus === 'joined' || challenge.userStatus === 'won' || challenge.userStatus === 'lost' || challenge.userStatus === 'pending';
+    }
+    if (selectedFilter === "upcoming") {
+      return challenge.userStatus === 'not_joined';
+    }
     return true; // "all" shows everything
   });
 
@@ -94,27 +137,15 @@ export function ChallengesAvailable({ challenges }: ChallengesAvailableProps) {
     // TODO: Implement join challenge logic
   };
 
+  const handleChallengePress = (challengeId: string) => {
+    console.log(`Opening challenge details: ${challengeId}`);
+    (navigation as any).navigate('ChallengeDetail', { challengeId });
+  };
+
   return (
     <View className="flex-1">
       {/* Filter Tabs */}
       <View className="flex-row mb-4 bg-secondary rounded-2xl p-1">
-        <TouchableOpacity
-          onPress={() => setSelectedFilter("all")}
-          className={`flex-1 py-3 rounded-xl ${
-            selectedFilter === "all" ? "bg-lime-500" : "bg-transparent"
-          }`}
-          activeOpacity={0.7}
-        >
-          <Text
-            style={{ fontFamily: "Poppins_600SemiBold" }}
-            className={`text-center ${
-              selectedFilter === "all" ? "text-black" : "text-gray-400"
-            }`}
-          >
-            All
-          </Text>
-        </TouchableOpacity>
-
         <TouchableOpacity
           onPress={() => setSelectedFilter("joined")}
           className={`flex-1 py-3 rounded-xl ${
@@ -148,6 +179,23 @@ export function ChallengesAvailable({ challenges }: ChallengesAvailableProps) {
             Upcoming
           </Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => setSelectedFilter("all")}
+          className={`flex-1 py-3 rounded-xl ${
+            selectedFilter === "all" ? "bg-lime-500" : "bg-transparent"
+          }`}
+          activeOpacity={0.7}
+        >
+          <Text
+            style={{ fontFamily: "Poppins_600SemiBold" }}
+            className={`text-center ${
+              selectedFilter === "all" ? "text-black" : "text-gray-400"
+            }`}
+          >
+            All
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* Challenge List */}
@@ -156,13 +204,21 @@ export function ChallengesAvailable({ challenges }: ChallengesAvailableProps) {
           filteredChallenges.map((challenge) => (
             <ChallengeCard
               key={challenge.id}
+              id={challenge.id}
               title={challenge.title}
               description={challenge.description}
               image={challenge.image}
               participants={challenge.participants}
               entryFee={challenge.entryFee}
-              duration={challenge.duration}
-              isJoined={challenge.isJoined}
+              doomThreshold={challenge.doomThreshold}
+              startTime={challenge.startTime}
+              endTime={challenge.endTime}
+              status={challenge.status}
+              userStatus={challenge.userStatus}
+              currentUsage={challenge.currentUsage}
+              userRank={challenge.userRank}
+              totalPool={challenge.totalPool}
+              onPress={() => handleChallengePress(challenge.id)}
               onJoin={() => handleJoin(challenge.id)}
             />
           ))
