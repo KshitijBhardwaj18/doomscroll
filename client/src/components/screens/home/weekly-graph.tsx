@@ -14,15 +14,15 @@ interface WeeklyGraphProps {
 }
 
 export function WeeklyGraph({ weekData }: WeeklyGraphProps) {
-  // Default data - can be overridden via props
+  // Demo data - hackathon week ending Oct 31
   const defaultData: DayData[] = [
-    { date: 5, day: "MON", doomMinutes: 45, maxMinutes: 120 },
-    { date: 6, day: "TUE", doomMinutes: 78, maxMinutes: 120 },
-    { date: 7, day: "WED", doomMinutes: 62, maxMinutes: 120 },
-    { date: 8, day: "THU", doomMinutes: 95, maxMinutes: 120 },
-    { date: 9, day: "FRI", doomMinutes: 88, maxMinutes: 120 },
-    { date: 10, day: "SAT", doomMinutes: 110, maxMinutes: 120 },
-    { date: 11, day: "SUN", doomMinutes: 72, maxMinutes: 120 },
+    { date: 25, day: "MON", doomMinutes: 0, maxMinutes: 120 },
+    { date: 26, day: "TUE", doomMinutes: 0, maxMinutes: 120 },
+    { date: 27, day: "WED", doomMinutes: 0, maxMinutes: 120 },
+    { date: 28, day: "THU", doomMinutes: 0, maxMinutes: 120 },
+    { date: 29, day: "FRI", doomMinutes: 0, maxMinutes: 120 },
+    { date: 30, day: "SAT", doomMinutes: 0, maxMinutes: 120 },
+    { date: 31, day: "SUN", doomMinutes: 87, maxMinutes: 120 }, // Oct 31 - Hackathon end
   ];
 
   const data = weekData || defaultData;

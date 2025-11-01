@@ -24,16 +24,12 @@ export function AppContent() {
       
       // Only check if we haven't checked this wallet yet
       if (checkedWallet !== walletAddress) {
-        console.log("⏱️ [AppContent] New wallet detected, scheduling user check...");
-        // Add a small delay to allow wallet adapter to fully settle after connection
         const timer = setTimeout(() => {
-          console.log("⏱️ [AppContent] Starting user check now...");
           setCheckedWallet(walletAddress);
           checkUserStatus();
-        }, 500); // 500ms delay to let wallet adapter settle
+        }, 500);
 
         return () => {
-          console.log("🧹 [AppContent] Cleaning up timer");
           clearTimeout(timer);
         };
       }
@@ -43,22 +39,11 @@ export function AppContent() {
     }
   }, [selectedAccount, checkedWallet, checkUserStatus]);
 
-  console.log("🎬 [AppContent] Render state:", {
-    hasAccount: !!selectedAccount,
-    isCheckingUser,
-    hasUser: !!user,
-    needsSignup,
-  });
-
-  // Show connect wallet prompt if not connected
   if (!selectedAccount) {
-    console.log("📱 [AppContent] Showing connect wallet prompt");
     return <ConnectWalletPrompt onConnect={connect} />;
   }
 
-  // Show loading while checking user status
   if (isCheckingUser) {
-    console.log("⏳ [AppContent] Showing loading screen");
     return (
       <View className="flex-1 bg-black justify-center items-center">
         <ActivityIndicator size="large" color="#a3e635" />
@@ -72,15 +57,11 @@ export function AppContent() {
     );
   }
 
-  // Show signup screen if user needs to sign up
   if (needsSignup && !user) {
-    console.log("📝 [AppContent] Showing signup screen");
     return <SignupScreen />;
   }
 
-  // Show main app if user exists
   if (user) {
-    console.log("✅ [AppContent] Showing main app for user:", user.name);
     return (
       <SafeAreaView className="bg-primary" style={styles.shell}>
         <NavigationContainer>
@@ -90,8 +71,6 @@ export function AppContent() {
     );
   }
 
-  // Fallback: still loading or error state
-  console.log("⚠️ [AppContent] Fallback state - showing loading");
   return (
     <View className="flex-1 bg-black justify-center items-center">
       <ActivityIndicator size="large" color="#a3e635" />

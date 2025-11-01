@@ -13,6 +13,8 @@ import {
 import { toUint8Array } from "js-base64";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
+import { Image } from "react-native";
+import { Asset } from "expo-asset";
 
 const CHAIN = "solana";
 const CLUSTER = "devnet";
@@ -97,8 +99,8 @@ async function persistAuthorization(
 }
 
 export const APP_IDENTITY = {
-  name: "Solana Mobile Expo Template",
-  uri: "https://fakedomain.com",
+  name: "doomscroll.sol",
+  uri: "https://doomscroll.sol",
 };
 
 export function useAuthorization() {

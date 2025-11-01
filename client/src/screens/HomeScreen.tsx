@@ -6,17 +6,20 @@ import { Welcome } from "../components/screens/home/welcome";
 import { ActivityRings } from "../components/screens/home/activity-rings";
 import { DailyProgress } from "../components/screens/home/daily-progress";
 import { WeeklyGraph } from "../components/screens/home/weekly-graph";
-import { WeeklyProgress } from "../components/screens/home/weekly-progress";
+import { ChallengeProgress } from "../components/screens/home/challenge-progress";
 import { WalletGuard } from "../components/wallet/WalletGuard";
 import { useUser } from "../contexts/UserContext";
 
 export function HomeScreen() {
   const { user } = useUser();
 
-  // Calculate total minutes from activity rings (mock data for now)
-  // TODO: Replace with actual screen time data from API
-  const currentMinutes = 42 + 28 + 17 + 38; // Instagram + Twitter + Reddit + TikTok = 125
-  const limitMinutes = user?.doomscrollLimit || 300; // User's limit or default 300 min
+  // Demo data - showing some activity after onboarding
+  const currentMinutes = 87; // Some usage today
+  const limitMinutes = user?.doomscrollLimit || 60; // User's limit or default 60 min
+
+  // Demo data - no challenges joined yet (will join during demo)
+  const hasJoinedChallenges = false;
+  const activeChallenge = undefined;
 
   return (
     <WalletGuard>
@@ -40,7 +43,10 @@ export function HomeScreen() {
             </Text>
           </View>
           <WeeklyGraph />
-          <WeeklyProgress percentage={62} />
+          <ChallengeProgress
+            activeChallenge={activeChallenge}
+            hasJoinedChallenges={hasJoinedChallenges}
+          />
         </ScrollView>
       </View>
     </WalletGuard>

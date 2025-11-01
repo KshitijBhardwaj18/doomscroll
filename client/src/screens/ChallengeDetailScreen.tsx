@@ -10,7 +10,14 @@ import {
   ImageSourcePropType,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { ChallengeStatus, UserChallengeStatus } from "../components/screens/challenges/challengeCard";
+import {
+  ChallengeStatus,
+  UserChallengeStatus,
+} from "../components/screens/challenges/challengeCard";
+import {
+  Leaderboard,
+  LeaderboardEntry,
+} from "../components/screens/challenges/Leaderboard";
 
 interface ChallengeDetailScreenProps {
   route: {
@@ -25,27 +32,27 @@ interface ChallengeDetailScreenProps {
 const getChallengeDetails = (id: string) => {
   // Map challenge IDs to their images
   const challengeImages: { [key: string]: any } = {
-    '1': require("../../assets/challenges/1.jpg"),
-    '2': require("../../assets/challenges/2.jpg"),
-    '3': require("../../assets/challenges/3.jpg"),
-    '4': require("../../assets/challenges/4.jpg"),
-    '5': require("../../assets/challenges/5.jpg"),
+    "1": require("../../assets/challenges/1.jpg"),
+    "2": require("../../assets/challenges/2.jpg"),
+    "3": require("../../assets/challenges/3.jpg"),
+    "4": require("../../assets/challenges/4.jpg"),
+    "5": require("../../assets/challenges/5.jpg"),
   };
-  
+
   return {
     id,
     title: "7-Day Social Media Detox",
     description:
       "Break free from the endless scroll! This challenge helps you reclaim your time by limiting social media usage to just 60 minutes per day. Join a community of focused individuals and win rewards for staying disciplined.",
-    image: challengeImages[id] || challengeImages['1'],
+    image: challengeImages[id] || challengeImages["1"],
     creator: "8Amg...vNi9",
     participants: 124,
     entryFee: "0.5 SOL",
     doomThreshold: 60,
     startTime: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
     endTime: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
-    status: 'active' as ChallengeStatus,
-    userStatus: 'joined' as UserChallengeStatus,
+    status: "active" as ChallengeStatus,
+    userStatus: "joined" as UserChallengeStatus,
     currentUsage: 45,
     userRank: 12,
     totalPool: "62 SOL",
@@ -57,14 +64,136 @@ const getChallengeDetails = (id: string) => {
       "Winners split the prize pool equally",
     ],
     dailyProgress: [
-      { day: 1, usage: 52, status: 'success' },
-      { day: 2, usage: 38, status: 'success' },
-      { day: 3, usage: 0, status: 'pending' },
-      { day: 4, usage: 0, status: 'pending' },
-      { day: 5, usage: 0, status: 'pending' },
-      { day: 6, usage: 0, status: 'pending' },
-      { day: 7, usage: 0, status: 'pending' },
+      { day: 1, usage: 52, status: "success" },
+      { day: 2, usage: 38, status: "success" },
+      { day: 3, usage: 0, status: "pending" },
+      { day: 4, usage: 0, status: "pending" },
+      { day: 5, usage: 0, status: "pending" },
+      { day: 6, usage: 0, status: "pending" },
+      { day: 7, usage: 0, status: "pending" },
     ],
+    leaderboard: [
+      {
+        rank: 1,
+        wallet: "sam.sol",
+        username: "sam.sol",
+        averageUsage: 24,
+        isCurrentUser: false,
+        isWinner: true,
+      },
+      {
+        rank: 2,
+        wallet: "carol.sol",
+        username: "carol.sol",
+        averageUsage: 26,
+        isCurrentUser: false,
+        isWinner: true,
+      },
+      {
+        rank: 3,
+        wallet: "jack.sol",
+        username: "jack.sol",
+        averageUsage: 26,
+        isCurrentUser: false,
+        isWinner: true,
+      },
+      {
+        rank: 4,
+        wallet: "nick.sol",
+        username: "nick.sol",
+        averageUsage: 29,
+        isCurrentUser: false,
+        isWinner: true,
+      },
+      {
+        rank: 5,
+        wallet: "mary.sol",
+        username: "mary.sol",
+        averageUsage: 32,
+        isCurrentUser: false,
+        isWinner: true,
+      },
+      {
+        rank: 6,
+        wallet: "mary.sol",
+        username: "mary.sol",
+        averageUsage: 36,
+        isCurrentUser: false,
+        isWinner: true,
+      },
+      {
+        rank: 7,
+        wallet: "dave.sol",
+        username: "dave.sol",
+        averageUsage: 38,
+        isCurrentUser: false,
+        isWinner: true,
+      },
+      {
+        rank: 8,
+        wallet: "eve.sol",
+        username: "eve.sol",
+        averageUsage: 48,
+        isCurrentUser: false,
+        isWinner: true,
+      },
+      {
+        rank: 9,
+        wallet: "grace.sol",
+        username: "grace.sol",
+        averageUsage: 51,
+        isCurrentUser: false,
+        isWinner: true,
+      },
+      {
+        rank: 10,
+        wallet: "iris.sol",
+        username: "iris.sol",
+        averageUsage: 52,
+        isCurrentUser: false,
+        isWinner: true,
+      },
+      {
+        rank: 11,
+        wallet: "kate.sol",
+        username: "kate.sol",
+        averageUsage: 58,
+        isCurrentUser: false,
+        isWinner: true,
+      },
+      {
+        rank: 12,
+        wallet: "8Amg...vNi9",
+        username: "You",
+        averageUsage: 45,
+        isCurrentUser: true,
+        isWinner: true,
+      },
+      {
+        rank: 13,
+        wallet: "lisa.sol",
+        username: "lisa.sol",
+        averageUsage: 62,
+        isCurrentUser: false,
+        isWinner: false,
+      },
+      {
+        rank: 14,
+        wallet: "mike.sol",
+        username: "mike.sol",
+        averageUsage: 65,
+        isCurrentUser: false,
+        isWinner: false,
+      },
+      {
+        rank: 15,
+        wallet: "nina.sol",
+        username: "nina.sol",
+        averageUsage: 68,
+        isCurrentUser: false,
+        isWinner: false,
+      },
+    ] as LeaderboardEntry[],
   };
 };
 
@@ -74,11 +203,12 @@ export default function ChallengeDetailScreen({
 }: ChallengeDetailScreenProps) {
   const { challengeId } = route.params;
   const challenge = getChallengeDetails(challengeId);
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
-  const isJoined = ['joined', 'won', 'lost', 'pending'].includes(challenge.userStatus);
-  const isActive = challenge.status === 'active';
-  const isEnded = challenge.status === 'ended';
+  const isJoined = ["joined", "won", "lost", "pending"].includes(
+    challenge.userStatus
+  );
+  const isActive = challenge.status === "active";
+  const isEnded = challenge.status === "ended";
 
   return (
     <View className="flex-1 bg-black">
@@ -92,7 +222,7 @@ export default function ChallengeDetailScreen({
           />
           {/* Gradient Overlay */}
           <View style={styles.gradientOverlay} />
-          
+
           {/* Back Button */}
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -215,7 +345,12 @@ export default function ChallengeDetailScreen({
               </Text>
               <View
                 className="p-5 rounded-2xl"
-                style={{ backgroundColor: challenge.currentUsage! <= challenge.doomThreshold ? '#1a3a1a' : '#3a1a1a' }}
+                style={{
+                  backgroundColor:
+                    challenge.currentUsage! <= challenge.doomThreshold
+                      ? "#1a3a1a"
+                      : "#3a1a1a",
+                }}
               >
                 <View className="flex-row justify-between items-center mb-4">
                   <View>
@@ -234,7 +369,9 @@ export default function ChallengeDetailScreen({
                   </View>
                   <View className="items-center">
                     <Text className="text-4xl mb-1">
-                      {challenge.currentUsage! <= challenge.doomThreshold ? '✅' : '⚠️'}
+                      {challenge.currentUsage! <= challenge.doomThreshold
+                        ? "✅"
+                        : "⚠️"}
                     </Text>
                     <Text
                       style={{ fontFamily: "Poppins_700Bold" }}
@@ -251,7 +388,10 @@ export default function ChallengeDetailScreen({
                     className="h-full rounded-full"
                     style={{
                       width: `${Math.min((challenge.currentUsage! / challenge.doomThreshold) * 100, 100)}%`,
-                      backgroundColor: challenge.currentUsage! <= challenge.doomThreshold ? '#84cc16' : '#ef4444',
+                      backgroundColor:
+                        challenge.currentUsage! <= challenge.doomThreshold
+                          ? "#84cc16"
+                          : "#ef4444",
                     }}
                   />
                 </View>
@@ -267,20 +407,20 @@ export default function ChallengeDetailScreen({
                     style={{ fontFamily: "Poppins_600SemiBold" }}
                     className="text-lime-500 text-xs"
                   >
-                    {challenge.doomThreshold - challenge.currentUsage!}m remaining today
+                    {challenge.doomThreshold - challenge.currentUsage!}m
+                    remaining today
                   </Text>
                 </View>
               </View>
-
             </View>
           )}
 
           {/* Rewards Arriving Soon (if won) */}
-          {isEnded && challenge.userStatus === 'won' && (
+          {isEnded && challenge.userStatus === "won" && (
             <View className="mb-6">
-              <View 
+              <View
                 className="p-6 rounded-2xl border-2"
-                style={{ backgroundColor: '#2a2a1a', borderColor: '#eab308' }}
+                style={{ backgroundColor: "#2a2a1a", borderColor: "#eab308" }}
               >
                 <View className="items-center mb-4">
                   <Text className="text-6xl mb-2">🏆</Text>
@@ -429,24 +569,80 @@ export default function ChallengeDetailScreen({
                 How to Win
               </Text>
               <View className="bg-secondary rounded-2xl p-5">
-                {challenge.rules.map((rule, index) => (
-                  <View key={index} className="flex-row mb-3">
-                    <View className="w-6 h-6 bg-lime-500 rounded-full items-center justify-center mr-3 mt-0.5">
-                      <Text
-                        style={{ fontFamily: "Poppins_600SemiBold" }}
-                        className="text-black text-xs"
-                      >
-                        {index + 1}
-                      </Text>
-                    </View>
+                {/* Rule bullets with green dots */}
+                <View className="flex-row mb-3">
+                  <View className="w-2 h-2 bg-lime-500 rounded-full mr-3 mt-2" />
+                  <Text
+                    style={{ fontFamily: "Poppins_400Regular" }}
+                    className="text-gray-400 text-sm flex-1 leading-5"
+                  >
+                    Automatic tracking via screen time data
+                  </Text>
+                </View>
+                <View className="flex-row mb-3">
+                  <View className="w-2 h-2 bg-lime-500 rounded-full mr-3 mt-2" />
+                  <Text
+                    style={{ fontFamily: "Poppins_400Regular" }}
+                    className="text-gray-400 text-sm flex-1 leading-5"
+                  >
+                    Winners split prize pool equally
+                  </Text>
+                </View>
+                <View className="flex-row mb-4">
+                  <View className="w-2 h-2 bg-lime-500 rounded-full mr-3 mt-2" />
+                  <Text
+                    style={{ fontFamily: "Poppins_400Regular" }}
+                    className="text-gray-400 text-sm flex-1 leading-5"
+                  >
+                    Must complete all {challenge.duration} days to qualify
+                  </Text>
+                </View>
+
+                {/* Tracked Apps */}
+                <Text
+                  style={{ fontFamily: "Poppins_700Bold" }}
+                  className="text-white text-base mb-3"
+                >
+                  Tracked Apps
+                </Text>
+                <View className="flex-row flex-wrap gap-2">
+                  <View className="flex-row items-center bg-black/30 px-3 py-2 rounded-full">
+                    <View className="w-2 h-2 bg-lime-500 rounded-full mr-2" />
                     <Text
-                      style={{ fontFamily: "Poppins_400Regular" }}
-                      className="text-gray-300 text-sm flex-1 leading-5"
+                      style={{ fontFamily: "Poppins_500Medium" }}
+                      className="text-white text-sm"
                     >
-                      {rule}
+                      Instagram
                     </Text>
                   </View>
-                ))}
+                  <View className="flex-row items-center bg-black/30 px-3 py-2 rounded-full">
+                    <View className="w-2 h-2 bg-lime-500 rounded-full mr-2" />
+                    <Text
+                      style={{ fontFamily: "Poppins_500Medium" }}
+                      className="text-white text-sm"
+                    >
+                      Twitter
+                    </Text>
+                  </View>
+                  <View className="flex-row items-center bg-black/30 px-3 py-2 rounded-full">
+                    <View className="w-2 h-2 bg-lime-500 rounded-full mr-2" />
+                    <Text
+                      style={{ fontFamily: "Poppins_500Medium" }}
+                      className="text-white text-sm"
+                    >
+                      TikTok
+                    </Text>
+                  </View>
+                  <View className="flex-row items-center bg-black/30 px-3 py-2 rounded-full">
+                    <View className="w-2 h-2 bg-lime-500 rounded-full mr-2" />
+                    <Text
+                      style={{ fontFamily: "Poppins_500Medium" }}
+                      className="text-white text-sm"
+                    >
+                      Reddit
+                    </Text>
+                  </View>
+                </View>
               </View>
             </View>
           )}
@@ -468,11 +664,11 @@ export default function ChallengeDetailScreen({
                       className="w-[13%] aspect-square rounded-xl items-center justify-center mb-3"
                       style={{
                         backgroundColor:
-                          day.status === 'success'
-                            ? '#1a3a1a'
-                            : day.status === 'failed'
-                            ? '#3a1a1a'
-                            : '#1a1a1a',
+                          day.status === "success"
+                            ? "#1a3a1a"
+                            : day.status === "failed"
+                              ? "#3a1a1a"
+                              : "#1a1a1a",
                       }}
                     >
                       <Text
@@ -482,11 +678,11 @@ export default function ChallengeDetailScreen({
                         D{day.day}
                       </Text>
                       <Text className="text-lg">
-                        {day.status === 'success'
-                          ? '✅'
-                          : day.status === 'failed'
-                          ? '❌'
-                          : '⏳'}
+                        {day.status === "success"
+                          ? "✅"
+                          : day.status === "failed"
+                            ? "❌"
+                            : "⏳"}
                       </Text>
                       {day.usage > 0 && (
                         <Text
@@ -505,118 +701,49 @@ export default function ChallengeDetailScreen({
 
           {/* Leaderboard Section */}
           {isJoined && (
-            <View className="mb-6">
-              <View className="flex-row justify-between items-center mb-3">
-                <Text
-                  style={{ fontFamily: "Poppins_700Bold" }}
-                  className="text-white text-xl"
-                >
-                  Leaderboard
-                </Text>
-                <TouchableOpacity onPress={() => setShowLeaderboard(!showLeaderboard)}>
+            <>
+              {isActive ? (
+                <Leaderboard
+                  entries={challenge.leaderboard}
+                  doomThreshold={challenge.doomThreshold}
+                  hasMore={true}
+                  remainingCount={35}
+                  onLoadMore={() => {}}
+                />
+              ) : (
+                // Empty state for upcoming challenges
+                <View className="mb-6">
                   <Text
-                    style={{ fontFamily: "Poppins_600SemiBold" }}
-                    className="text-lime-500 text-sm"
+                    style={{ fontFamily: "Poppins_700Bold" }}
+                    className="text-white text-xl mb-4"
                   >
-                    {showLeaderboard ? 'Hide' : 'View All'}
+                    🏆 Leaderboard
                   </Text>
-                </TouchableOpacity>
-              </View>
-
-              <View className="bg-secondary rounded-2xl p-5">
-                {/* Your Rank */}
-                <View
-                  className="flex-row items-center justify-between p-3 rounded-xl mb-3"
-                  style={{ backgroundColor: '#2a2a1a', borderWidth: 2, borderColor: '#84cc16' }}
-                >
-                  <View className="flex-row items-center flex-1">
+                  <View className="bg-secondary rounded-2xl p-8 items-center">
+                    <View className="w-20 h-20 bg-purple-500/20 rounded-full items-center justify-center mb-4">
+                      <Ionicons
+                        name="trophy-outline"
+                        size={40}
+                        color="#a855f7"
+                      />
+                    </View>
                     <Text
-                      style={{ fontFamily: "Poppins_700Bold" }}
-                      className="text-lime-500 text-lg w-8"
+                      style={{ fontFamily: "Poppins_600SemiBold" }}
+                      className="text-white text-lg text-center mb-2"
                     >
-                      #{challenge.userRank}
+                      Challenge Not Started
                     </Text>
-                    <View className="flex-1 ml-3">
-                      <Text
-                        style={{ fontFamily: "Poppins_600SemiBold" }}
-                        className="text-white text-sm"
-                      >
-                        You
-                      </Text>
-                      <Text
-                        style={{ fontFamily: "Poppins_400Regular" }}
-                        className="text-gray-400 text-xs"
-                      >
-                        {challenge.creator}
-                      </Text>
-                    </View>
-                    <View className="items-end">
-                      <Text
-                        style={{ fontFamily: "Poppins_600SemiBold" }}
-                        className="text-lime-500 text-base"
-                      >
-                        {challenge.currentUsage}m
-                      </Text>
-                      <Text
-                        style={{ fontFamily: "Poppins_400Regular" }}
-                        className="text-gray-500 text-xs"
-                      >
-                        avg/day
-                      </Text>
-                    </View>
+                    <Text
+                      style={{ fontFamily: "Poppins_400Regular" }}
+                      className="text-gray-400 text-center text-sm leading-5"
+                    >
+                      Your rankings and leaderboard will be shown here once the
+                      challenge begins. Get ready to compete!
+                    </Text>
                   </View>
                 </View>
-
-                {/* Top 3 */}
-                {showLeaderboard && (
-                  <>
-                    {[1, 2, 3].map((rank) => (
-                      <View
-                        key={rank}
-                        className="flex-row items-center justify-between p-3 mb-2"
-                      >
-                        <View className="flex-row items-center flex-1">
-                          <Text
-                            style={{ fontFamily: "Poppins_700Bold" }}
-                            className="text-gray-400 text-base w-8"
-                          >
-                            #{rank}
-                          </Text>
-                          <View className="flex-1 ml-3">
-                            <Text
-                              style={{ fontFamily: "Poppins_600SemiBold" }}
-                              className="text-white text-sm"
-                            >
-                              User {rank}
-                            </Text>
-                            <Text
-                              style={{ fontFamily: "Poppins_400Regular" }}
-                              className="text-gray-400 text-xs"
-                            >
-                              8Amg...vNi9
-                            </Text>
-                          </View>
-                          <View className="items-end">
-                            <Text
-                              style={{ fontFamily: "Poppins_600SemiBold" }}
-                              className="text-white text-base"
-                            >
-                              {25 + rank * 5}m
-                            </Text>
-                            <Text
-                              style={{ fontFamily: "Poppins_400Regular" }}
-                              className="text-gray-500 text-xs"
-                            >
-                              avg/day
-                            </Text>
-                          </View>
-                        </View>
-                      </View>
-                    ))}
-                  </>
-                )}
-              </View>
-            </View>
+              )}
+            </>
           )}
         </View>
       </ScrollView>
@@ -666,4 +793,3 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.7)",
   },
 });
-

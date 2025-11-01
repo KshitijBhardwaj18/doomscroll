@@ -39,36 +39,26 @@ export function UserProvider({ children }: UserProviderProps) {
   // Check user status when wallet connects
   const checkUserStatus = async () => {
     if (!selectedAccount) {
-      console.log("📝 [UserContext] No account selected, clearing user");
       setUserState(null);
       setNeedsSignup(false);
       return;
     }
 
-    console.log(
-      "📝 [UserContext] Checking user status for wallet:",
-      selectedAccount.publicKey.toBase58()
-    );
     setIsCheckingUser(true);
     setError(null);
 
     try {
       const result = await checkUser();
-      console.log("📝 [UserContext] Check user result:", result);
 
       if (result.exists && result.user) {
-        console.log("✅ [UserContext] User exists, setting user state");
         setUserState(result.user);
         setNeedsSignup(false);
       } else {
-        console.log("⚠️ [UserContext] User does NOT exist, needs signup");
         setUserState(null);
         setNeedsSignup(true);
       }
     } catch (err: any) {
-      console.error("❌ [UserContext] Error checking user status:", err);
       setError(err.message);
-      // On error, assume user needs to sign up to be safe
       setUserState(null);
       setNeedsSignup(true);
     } finally {
@@ -90,7 +80,6 @@ export function UserProvider({ children }: UserProviderProps) {
       setUserState(userData);
       setNeedsSignup(false);
     } catch (err: any) {
-      console.error("Error refreshing user:", err);
       setError(err.message);
     } finally {
       setIsLoading(false);
@@ -112,10 +101,8 @@ export function UserProvider({ children }: UserProviderProps) {
     setError(null);
   };
 
-  // Auto-clear user when wallet disconnects or changes
   useEffect(() => {
     if (!selectedAccount) {
-      console.log("🔄 [UserContext] Wallet disconnected, clearing user");
       clearUser();
     }
   }, [selectedAccount]);

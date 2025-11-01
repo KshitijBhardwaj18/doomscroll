@@ -1,105 +1,326 @@
-# Solana Mobile Expo Template
+# Doomscroll Mobile App
 
-This template is a ready-to-go Android Expo dApp that offers:
+![Doomscroll Banner](./assets/readme.png)
 
-- Solana libraries: `web3.js`, Mobile Wallet Adapter, and `spl-token`.
-- Required polyfills like `crypto` and `Buffer` configured.
-- Pre-built React UI and re-usable hooks and code patterns like `useMobileWallet`.
+<div align="center">
 
-**This is only fully functional on Android.**
+**React Native mobile application for breaking social media addiction through gamified challenges**
 
-<table>
-  <tr>
-    <td align="center">
-      <img src="./screenshots/screenshot1.png" alt="Scaffold dApp Screenshot 1" width=300 />
-    </td>
-    <td align="center">
-      <img src="./screenshots/screenshot2.png" alt="Scaffold dApp Screenshot 2" width=300 />
-    </td>
-    <td align="center">
-      <img src="./screenshots/screenshot3.png" alt="Scaffold dApp Screenshot 3" width=300 />
-    </td>
-  </tr>
-</table>
+[![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactnative.dev/)
+[![Expo](https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white)](https://expo.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Solana](https://img.shields.io/badge/Solana-9945FF?style=for-the-badge&logo=solana)](https://solana.com)
 
-## Tech Stack
+</div>
 
-| Library               | Category          | Version | Description                                           |
-| --------------------- | ----------------- | ------- | ----------------------------------------------------- |
-| React Native          | Mobile Framework  | v0.76   | The best cross-platform mobile framework              |
-| Expo                  | SDK               | v52     | Allows (optional) Expo modules                        |
-| React                 | UI Framework      | v18.3   | The most popular UI framework in the world            |
-| Mobile Wallet Adapter | SDK               | v2.1    | Connect and request signing from mobile wallet apps   |
-| Solana web3.js        | SDK               | v1.78   | General Solana library for transactions and RPCs      |
-| spl-token             | SDK               | v0.4    | Library for building with Solana SPL tokens           |
-| React Native Paper    | Component Library | v5.12   | Production-ready components following Material Design |
-| React Navigation      | Navigation        | v6      | Performant and consistent navigation framework        |
-| React Query           | State management  | v5.24   | Async query management                                |
-| TypeScript            | Language          | v5      | Static typechecking                                   |
-| AsyncStorage          | Persistence       | v1.23   | State persistence                                     |
+---
 
-## Quick Start
+## 📱 Overview
+
+The Doomscroll mobile app is a React Native application built with Expo that helps users track their social media usage, join challenges, and win SOL rewards for building better digital habits.
+
+## ✨ Features
+
+### 🎯 Core Functionality
+- **Screen Time Tracking**: Automatic monitoring of Instagram, Twitter, Reddit, and TikTok
+- **Doom Meter**: Visual indicator showing daily usage vs. limit
+- **Activity Rings**: Per-app breakdown of daily usage
+- **Weekly Analytics**: 7-day usage graph with trends
+
+### 🏆 Challenge System
+- **Browse Challenges**: Filter by Joined/Upcoming/All
+- **Join with SOL**: Pay entry fees via Phantom wallet
+- **Live Leaderboards**: Real-time rankings and competition
+- **Challenge Details**: Full info, rules, and daily progress tracking
+
+### 💰 Wallet Integration
+- **Phantom Wallet**: Seamless Solana Mobile Wallet Adapter integration
+- **Transaction Signing**: Secure challenge entry and reward claims
+- **Balance Display**: View SOL balance and transaction history
+
+### 🎨 User Interface
+- **Dark Theme**: Beautiful, modern dark UI
+- **Smooth Animations**: Native-feeling transitions
+- **Bottom Tab Navigation**: Easy access to Home, Challenges, and Profile
+- **Responsive Design**: Optimized for various screen sizes
+
+## 🛠 Tech Stack
+
+- **Framework**: React Native with Expo SDK 52
+- **Language**: TypeScript
+- **Styling**: NativeWind (Tailwind CSS for React Native)
+- **Navigation**: React Navigation v6 (Bottom Tabs + Stack)
+- **State Management**: React Context API + TanStack Query
+- **Wallet**: Solana Mobile Wallet Adapter
+- **Storage**: AsyncStorage for local persistence
+- **Fonts**: Poppins (Google Fonts via expo-google-fonts)
+- **Icons**: Ionicons
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- A free [Expo](https://expo.dev/) account.
-- An Android device/emulator to test your app
-  - Install an MWA compliant wallet app on your device/emulator.
-- If using Expo's cloud service `eas build`, no further setup is required.
-- If building locally:
-  - React Native and Android Envrionment [setup](https://docs.solanamobile.com/getting-started/development-setup)
+```bash
+# Node.js 18+
+node --version
 
-### Initialize
+# Yarn or npm
+yarn --version
 
-Run the CLI command:
-
-```
-yarn create expo-app --template @solana-mobile/solana-mobile-expo-template
+# Expo CLI
+npm install -g expo-cli
 ```
 
-Choose your project name then navigate into the directory.
+### Installation
 
-### Build and run the app
+1. **Install Dependencies**
+```bash
+cd client
+yarn install
+```
 
-Once your app is initialized, follow the **["Running the app"](https://docs.solanamobile.com/react-native/expo#running-the-app)** guide to launch the template as a custom development build.
+2. **Configure Environment**
+```bash
+# Update app.json with your settings
+# Set your API endpoint in src/services/api.ts
+```
 
-## Troubleshooting
+3. **Start Development Server**
+```bash
+yarn start
+```
 
-- `Metro has encountered an error: While trying to resolve module @solana-mobile/mobile-wallet-adapter-protocol...`
+4. **Run on Device**
 
-  - This is an on-going issue when using `npm install` to install the Expo template.
-  - To mitigate, clean your project dependencies and reinstall with `yarn install`
+For Android (requires custom dev build):
+```bash
+# Build development client
+yarn build:local
 
-- `The package 'solana-mobile-wallet-adapter-protocol' doesn't seem to be linked. Make sure: ...`
+# Or use EAS Build
+yarn build
 
-  - Ensure you are _NOT_ using Expo Go to run your app.
-  - You need to be using an [Expo custom development build](https://docs.solanamobile.com/react-native/expo#custom-development-build), rather than Expo Go.
+# Run on connected device
+yarn android
+```
 
-- `failed to connect to...`
+For iOS:
+```bash
+yarn ios
+```
 
-  - This is an Expo error that can occur when trying to connect to the dev server on certain Wifi networks.
-  - To fix, try starting the dev server with the `--tunnel` command (`npx expo start --dev-client --tunnel`)
+## 📁 Project Structure
 
-- `Error: crypto.getRandomValues() not supported`
-  - This is a polyfill issue when trying to use certain functions from the `@solana/web3.js` in a React Native/Expo environment.
-  - To fix, ensure your App properly imports and uses the polyfills like in this [guide](http://docs.solanamobile.com/react-native/expo#step-3-update-appjs-with-polyfills).
+```
+client/
+├── src/
+│   ├── components/          # Reusable UI components
+│   │   ├── modals/         # Modal components
+│   │   ├── screens/        # Screen-specific components
+│   │   │   ├── home/       # Home screen components
+│   │   │   └── challenges/ # Challenge components
+│   │   └── wallet/         # Wallet-related components
+│   ├── screens/            # Main screen components
+│   │   ├── HomeScreen.tsx
+│   │   ├── ChallengesScreen.tsx
+│   │   ├── ProfileScreen.tsx
+│   │   └── ChallengeDetailScreen.tsx
+│   ├── navigators/         # Navigation configuration
+│   │   └── AppNavigator.tsx
+│   ├── contexts/           # React Context providers
+│   │   └── UserContext.tsx
+│   ├── hooks/              # Custom React hooks
+│   │   └── useJoinChallenge.ts
+│   ├── services/           # API services
+│   │   └── api.ts
+│   └── utils/              # Utility functions
+│       ├── useAuthorization.tsx
+│       └── useMobileWallet.tsx
+├── assets/                 # Images, fonts, etc.
+│   ├── logo.png
+│   ├── avatar.jpeg
+│   └── challenges/         # Challenge images
+├── app.json               # Expo configuration
+├── package.json
+└── tailwind.config.js     # NativeWind configuration
+```
 
-<br>
+## 🔧 Configuration
 
-- `error Failed to load configuration of your project.`
-  - Same as above, but for `yarn`. [Uninstall and reinstall](https://github.com/react-native-community/cli#updating-the-cli) the CLI through yarn.
+### app.json
+```json
+{
+  "expo": {
+    "name": "Doomscroll",
+    "slug": "doomscroll",
+    "scheme": "doomscroll",
+    "userInterfaceStyle": "dark"
+  }
+}
+```
 
-<br>
+### API Configuration
+Update the API endpoint in `src/services/api.ts`:
+```typescript
+const API_BASE_URL = 'http://your-server-url:3000';
+```
 
-- `Looks like your iOS environment is not properly set`:
-  - You can ignore this during template initialization and build the Android app as normal. This template is only compatible with Android.
+## 📦 Key Dependencies
 
-<br>
+```json
+{
+  "@solana-mobile/mobile-wallet-adapter-protocol": "^2.2.2",
+  "@solana-mobile/mobile-wallet-adapter-protocol-web3js": "^2.2.2",
+  "@solana/web3.js": "^1.78.4",
+  "@react-navigation/native": "^6.1.14",
+  "@react-navigation/bottom-tabs": "^6.5.16",
+  "@tanstack/react-query": "^5.24.1",
+  "expo": "^52.0.43",
+  "react-native": "0.76.9",
+  "nativewind": "^4.2.1"
+}
+```
 
-- `Usage Error: It seems you are trying to add a package using a https:... url; we now require package names to be explicitly specified.`
-  - This error happens on certain versions of `yarn`, and occurs if you try to initialize the template through the Github repo URL, rather than the npm package. To avoid this, use the `@solana-mobile/solana-mobile-dapp-scaffold` package as specified, or downgrade your `yarn` version to classic (1.22.x).
+## 🎨 Styling
 
-<br>
+This project uses **NativeWind** (Tailwind CSS for React Native):
 
-- `error Couldn't find the ".../@solana-mobile/solana-mobile-dapp-scaffold/template.config.js file inside "@solana-mobile/solana-mobile-dapp-scaffold" template.`
-  - This is a [known error](https://github.com/react-native-community/cli/issues/1924) that occurs with certain versions of `yarn` (>= 3.5.0). It is fixed by running the cli command with the `--npm` flag or downgrading your version of `yarn`.
+```tsx
+// Example usage
+<View className="flex-1 bg-black p-4">
+  <Text className="text-white text-xl font-bold">
+    Hello Doomscroll
+  </Text>
+</View>
+```
+
+Custom colors defined in `tailwind.config.js`:
+- `primary`: #000000 (Black)
+- `secondary`: #1a1a1a (Dark Gray)
+- `lime-500`: #84cc16 (Brand Green)
+
+## 🔐 Wallet Integration
+
+### Connecting Wallet
+```typescript
+import { useMobileWallet } from '../utils/useMobileWallet';
+
+const { connect } = useMobileWallet();
+await connect();
+```
+
+### Signing Transactions
+```typescript
+import { useJoinChallenge } from '../hooks/useJoinChallenge';
+
+const { joinChallenge } = useJoinChallenge();
+await joinChallenge(challengeId, '0.5 SOL');
+```
+
+## 📱 Screens
+
+### Home Screen
+- Welcome message with username
+- Activity rings (per-app usage)
+- Doom meter (daily progress)
+- Weekly graph
+- Challenge progress
+
+### Challenges Screen
+- Filter tabs (Joined/Upcoming/All)
+- Challenge cards with status badges
+- Join/View Details buttons
+- Entry fee and participant count
+
+### Challenge Detail Screen
+- Challenge header with image
+- Quick stats (participants, pool, threshold)
+- Challenge info and rules
+- Daily progress calendar
+- Live leaderboard
+- Join/View Details CTA
+
+### Profile Screen
+- User avatar and wallet address
+- Quick stats (Challenges, Wins, SOL earned)
+- Achievements section
+- Settings and logout
+
+## 🧪 Development
+
+### Running Tests
+```bash
+yarn test
+```
+
+### Linting
+```bash
+yarn lint
+```
+
+### Type Checking
+```bash
+yarn tsc
+```
+
+## 📱 Building for Production
+
+### Android
+```bash
+# Create production build
+eas build --platform android --profile production
+
+# Or local build
+eas build --platform android --profile production --local
+```
+
+### iOS
+```bash
+eas build --platform ios --profile production
+```
+
+## 🐛 Troubleshooting
+
+### Metro Bundler Issues
+```bash
+# Clear cache
+yarn start --clear
+
+# Reset Metro
+rm -rf node_modules/.cache
+```
+
+### Wallet Connection Issues
+- Ensure Phantom wallet is installed
+- Check that you're on the correct network (devnet/mainnet)
+- Clear AsyncStorage: `AsyncStorage.clear()`
+
+### Build Errors
+```bash
+# Clean and reinstall
+rm -rf node_modules
+yarn install
+
+# Rebuild native modules
+npx expo prebuild --clean
+```
+
+## 🤝 Contributing
+
+1. Follow the existing code style (TypeScript + NativeWind)
+2. Test on both Android and iOS if possible
+3. Update this README if adding new features
+4. Ensure all TypeScript types are properly defined
+
+## 📄 License
+
+MIT License - see the [LICENSE](../LICENSE) file for details.
+
+---
+
+<div align="center">
+
+**Built with ❤️ using React Native and Solana**
+
+</div>
+

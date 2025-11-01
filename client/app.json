@@ -1,33 +1,62 @@
 {
   "expo": {
-    "name": "doomscroll",
+    "name": "Doomscroll",
     "slug": "doomscroll",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "dark",
+    "scheme": "doomscroll",
     "newArchEnabled": "true",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.doomscroll.app"
+      "bundleIdentifier": "com.doomscroll.app",
+      "icon": "./assets/logo.png",
+      "associatedDomains": [
+        "applinks:doomscroll.com",
+        "applinks:www.doomscroll.com"
+      ]
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#000000"
       },
-      "package": "com.doomscroll.solana"
+      "package": "com.doomscroll.solana",
+      "icon": "./assets/logo.png",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "doomscroll.com",
+              "pathPrefix": "/"
+            },
+            {
+              "scheme": "https",
+              "host": "www.doomscroll.com",
+              "pathPrefix": "/"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logo.png"
     },
     "extra": {
       "eas": {

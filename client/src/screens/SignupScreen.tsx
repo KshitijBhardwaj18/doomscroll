@@ -70,6 +70,7 @@ export function SignupScreen() {
       });
 
       setUser(user);
+      // Success - no permissions modal for demo
       Alert.alert("Success", "Account created successfully! 🎉");
     } catch (error: any) {
       console.error("Signup error:", error);

@@ -15,33 +15,33 @@ interface ActivityRingsProps {
 }
 
 export function ActivityRings({ apps }: ActivityRingsProps) {
-  // Default data - can be overridden via props
+  // Demo data - showing some activity
   const defaultApps: SocialMediaApp[] = [
     {
       icon: "logo-instagram",
       label: "Instagram",
-      minutes: 45,
+      minutes: 28,
       maxMinutes: 60,
       color: "#E4405F", // Instagram pink
     },
     {
       icon: "logo-twitter",
       label: "Twitter",
-      minutes: 32,
+      minutes: 19,
       maxMinutes: 60,
       color: "#1DA1F2", // Twitter blue
     },
     {
       icon: "logo-reddit",
       label: "Reddit",
-      minutes: 28,
+      minutes: 23,
       maxMinutes: 60,
       color: "#FF4500", // Reddit orange
     },
     {
       icon: "logo-tiktok",
       label: "TikTok",
-      minutes: 52,
+      minutes: 17,
       maxMinutes: 60,
       color: "#00F2EA", // TikTok cyan
     },
@@ -92,7 +92,7 @@ export function ActivityRings({ apps }: ActivityRingsProps) {
             </Text>
             <Text
               style={{ fontFamily: "Poppins_400Regular" }}
-              className="text-[10px] text-gray-500"
+              className="text-[10px] text-white"
             >
               {app.label}
             </Text>

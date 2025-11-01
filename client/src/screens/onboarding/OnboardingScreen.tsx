@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import "../../global.css";
@@ -91,19 +91,31 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
 
       {/* Content */}
       <View className="flex-1 justify-center items-center px-8">
-        {/* Icon */}
-        <View
-          className="w-32 h-32 rounded-full items-center justify-center mb-8"
-          style={{
-            backgroundColor: `${pages[currentPage].color}20`,
-          }}
-        >
-          <Ionicons
-            name={pages[currentPage].icon}
-            size={64}
-            color={pages[currentPage].color}
-          />
-        </View>
+        {/* Icon or Logo */}
+        {currentPage === 0 ? (
+          // First page - show logo
+          <View className="w-32 h-32 items-center justify-center mb-8">
+            <Image
+              source={require("../../../assets/logo.png")}
+              style={{ width: 120, height: 120 }}
+              resizeMode="contain"
+            />
+          </View>
+        ) : (
+          // Other pages - show icon
+          <View
+            className="w-32 h-32 rounded-full items-center justify-center mb-8"
+            style={{
+              backgroundColor: `${pages[currentPage].color}20`,
+            }}
+          >
+            <Ionicons
+              name={pages[currentPage].icon}
+              size={64}
+              color={pages[currentPage].color}
+            />
+          </View>
+        )}
 
         {/* Title */}
         <Text

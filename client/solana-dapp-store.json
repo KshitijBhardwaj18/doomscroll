@@ -1,0 +1,16 @@
+{
+  "name": "Doomscroll",
+  "description": "Break free from doomscrolling. Join challenges, track your social media usage, and win SOL rewards for building better digital habits.",
+  "icon": "./assets/logo.png",
+  "website": "https://doomscroll.com",
+  "twitter": "@doomscrollapp",
+  "category": "Lifestyle",
+  "screenshots": [],
+  "tags": [
+    "social",
+    "wellness",
+    "challenges",
+    "rewards"
+  ]
+}
+
